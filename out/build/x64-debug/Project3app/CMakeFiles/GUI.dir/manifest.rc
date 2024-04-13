@@ -1,0 +1,2 @@
+#pragma code_page(65001)
+1 /* CREATEPROCESS_MANIFEST_RESOURCE_ID */ 24 /* RT_MANIFEST */ "C:/Users/andre/source/repos/Project-3-DSA/out/build/x64-debug/Project3app/CMakeFiles/GUI.dir/embed.manifest"

@@ -1,0 +1,5 @@
+C:/Users/andre/source/repos/Project-3-DSA/out/build/x86-debug/CMakeFiles/edit_cache.dir
+C:/Users/andre/source/repos/Project-3-DSA/out/build/x86-debug/CMakeFiles/rebuild_cache.dir
+C:/Users/andre/source/repos/Project-3-DSA/out/build/x86-debug/Project3app/CMakeFiles/GUI.dir
+C:/Users/andre/source/repos/Project-3-DSA/out/build/x86-debug/Project3app/CMakeFiles/edit_cache.dir
+C:/Users/andre/source/repos/Project-3-DSA/out/build/x86-debug/Project3app/CMakeFiles/rebuild_cache.dir

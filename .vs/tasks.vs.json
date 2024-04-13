@@ -5,6 +5,16 @@
       "taskLabel": "task-GUI",
       "appliesTo": "GUI.cpp",
       "type": "launch"
+    },
+    {
+      "taskLabel": "task-Project-3-DSA",
+      "appliesTo": "/",
+      "type": "launch"
+    },
+    {
+      "taskLabel": "task-GUI",
+      "appliesTo": "Project3app/GUI.cpp",
+      "type": "launch"
     }
   ]
 }
