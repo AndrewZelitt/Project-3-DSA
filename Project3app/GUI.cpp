@@ -35,8 +35,9 @@ public:
 class output_table : public Fl_Table_Row {
 private: 
 	vector<Row> datastore;
-	static void event_callback(Fl_Widget*, void*);
 
+	static void event_callback(Fl_Widget*, void*);
+	void event_callback2();
 public:
 
 	output_table(int x, int y, int w, int h, const char* l = 0) : Fl_Table_Row(x, y, w, h, l) {
@@ -44,6 +45,16 @@ public:
 	}
 	void autowidth(int pad);
 };
+
+void output_table::event_callback(Fl_Widget*, void* data) {
+	output_table* o = (output_table*)data;
+	o->event_callback2();
+}
+
+void output_table::event_callback2() {
+	//this should be where the table is updated.
+	draw();
+}
 
 //adapted from the example code for autowidth for a table from fltk.
 void output_table::autowidth(int pad) {
