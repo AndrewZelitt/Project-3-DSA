@@ -1,0 +1,386 @@
+{
+	"archive" : 
+	{
+		"commandFragments" : 
+		[
+			{
+				"fragment" : "/machine:x64",
+				"role" : "flags"
+			}
+		]
+	},
+	"artifacts" : 
+	[
+		{
+			"path" : "fltk/lib/fltk_imagesd.lib"
+		}
+	],
+	"backtrace" : 2,
+	"backtraceGraph" : 
+	{
+		"commands" : 
+		[
+			"add_library",
+			"fl_add_library",
+			"install",
+			"target_link_libraries",
+			"add_compile_options",
+			"include",
+			"target_compile_definitions",
+			"add_definitions",
+			"include_directories"
+		],
+		"files" : 
+		[
+			"fltk/CMake/fl_add_library.cmake",
+			"fltk/src/CMakeLists.txt",
+			"fltk/CMake/setup.cmake",
+			"fltk/CMakeLists.txt",
+			"fltk/CMake/options.cmake"
+		],
+		"nodes" : 
+		[
+			{
+				"file" : 1
+			},
+			{
+				"command" : 1,
+				"file" : 1,
+				"line" : 797,
+				"parent" : 0
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 68,
+				"parent" : 1
+			},
+			{
+				"command" : 2,
+				"file" : 0,
+				"line" : 232,
+				"parent" : 1
+			},
+			{
+				"command" : 3,
+				"file" : 1,
+				"line" : 799,
+				"parent" : 0
+			},
+			{
+				"command" : 3,
+				"file" : 1,
+				"line" : 798,
+				"parent" : 0
+			},
+			{
+				"file" : 3
+			},
+			{
+				"command" : 5,
+				"file" : 3,
+				"line" : 68,
+				"parent" : 6
+			},
+			{
+				"file" : 2,
+				"parent" : 7
+			},
+			{
+				"command" : 4,
+				"file" : 2,
+				"line" : 144,
+				"parent" : 8
+			},
+			{
+				"command" : 6,
+				"file" : 0,
+				"line" : 99,
+				"parent" : 1
+			},
+			{
+				"command" : 7,
+				"file" : 2,
+				"line" : 141,
+				"parent" : 8
+			},
+			{
+				"command" : 7,
+				"file" : 2,
+				"line" : 142,
+				"parent" : 8
+			},
+			{
+				"command" : 5,
+				"file" : 3,
+				"line" : 78,
+				"parent" : 6
+			},
+			{
+				"file" : 4,
+				"parent" : 13
+			},
+			{
+				"command" : 8,
+				"file" : 4,
+				"line" : 179,
+				"parent" : 14
+			},
+			{
+				"command" : 8,
+				"file" : 4,
+				"line" : 205,
+				"parent" : 14
+			},
+			{
+				"command" : 8,
+				"file" : 4,
+				"line" : 256,
+				"parent" : 14
+			}
+		]
+	},
+	"compileGroups" : 
+	[
+		{
+			"compileCommandFragments" : 
+			[
+				{
+					"fragment" : "/DWIN32 /D_WINDOWS /W3 /GR /EHsc /MDd /Zi /Ob0 /Od /RTC1"
+				},
+				{
+					"backtrace" : 9,
+					"fragment" : "/utf-8"
+				}
+			],
+			"defines" : 
+			[
+				{
+					"backtrace" : 10,
+					"define" : "FL_LIBRARY"
+				},
+				{
+					"backtrace" : 4,
+					"define" : "HAVE_PNG_GET_VALID=1"
+				},
+				{
+					"backtrace" : 4,
+					"define" : "HAVE_PNG_H=1"
+				},
+				{
+					"backtrace" : 4,
+					"define" : "HAVE_PNG_SET_TRNS_TO_ALPHA=1"
+				},
+				{
+					"backtrace" : 11,
+					"define" : "WIN32_LEAN_AND_MEAN"
+				},
+				{
+					"backtrace" : 12,
+					"define" : "_CRT_SECURE_NO_WARNINGS"
+				}
+			],
+			"includes" : 
+			[
+				{
+					"backtrace" : 15,
+					"path" : "C:/Users/andre/source/repos/Project-3-DSA/fltk/zlib"
+				},
+				{
+					"backtrace" : 16,
+					"path" : "C:/Users/andre/source/repos/Project-3-DSA/fltk/png"
+				},
+				{
+					"backtrace" : 17,
+					"path" : "C:/Users/andre/source/repos/Project-3-DSA/fltk/jpeg"
+				},
+				{
+					"backtrace" : 5,
+					"path" : "C:/Users/andre/source/repos/Project-3-DSA/out/build/x64-debug/fltk/src/.."
+				},
+				{
+					"backtrace" : 5,
+					"path" : "C:/Users/andre/source/repos/Project-3-DSA/fltk/src/.."
+				}
+			],
+			"language" : "CXX",
+			"sourceIndexes" : 
+			[
+				0,
+				1,
+				2,
+				3,
+				4,
+				5,
+				6,
+				7,
+				8,
+				9,
+				10,
+				11,
+				12,
+				13,
+				14
+			]
+		}
+	],
+	"dependencies" : 
+	[
+		{
+			"backtrace" : 4,
+			"id" : "fltk_z::@58d6b2e6b53320319fb5"
+		},
+		{
+			"backtrace" : 4,
+			"id" : "fltk_png::@87a2345ff5bcb04603f1"
+		},
+		{
+			"backtrace" : 4,
+			"id" : "fltk_jpeg::@42b24047a6d02014a933"
+		},
+		{
+			"backtrace" : 5,
+			"id" : "fltk::@fd19560740077aedf212"
+		}
+	],
+	"id" : "fltk_images::@fd19560740077aedf212",
+	"install" : 
+	{
+		"destinations" : 
+		[
+			{
+				"backtrace" : 3,
+				"path" : "lib"
+			}
+		],
+		"prefix" : 
+		{
+			"path" : "C:/Users/andre/Source/Repos/Project-3-DSA/out/install/x64-debug"
+		}
+	},
+	"name" : "fltk_images",
+	"nameOnDisk" : "fltk_imagesd.lib",
+	"paths" : 
+	{
+		"build" : "fltk/src",
+		"source" : "fltk/src"
+	},
+	"sourceGroups" : 
+	[
+		{
+			"name" : "Source Files",
+			"sourceIndexes" : 
+			[
+				0,
+				1,
+				2,
+				3,
+				4,
+				5,
+				6,
+				7,
+				8,
+				9,
+				10,
+				11,
+				12,
+				13,
+				14
+			]
+		}
+	],
+	"sources" : 
+	[
+		{
+			"backtrace" : 2,
+			"compileGroupIndex" : 0,
+			"path" : "fltk/src/fl_images_core.cxx",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 2,
+			"compileGroupIndex" : 0,
+			"path" : "fltk/src/fl_write_png.cxx",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 2,
+			"compileGroupIndex" : 0,
+			"path" : "fltk/src/Fl_BMP_Image.cxx",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 2,
+			"compileGroupIndex" : 0,
+			"path" : "fltk/src/Fl_File_Icon2.cxx",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 2,
+			"compileGroupIndex" : 0,
+			"path" : "fltk/src/Fl_GIF_Image.cxx",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 2,
+			"compileGroupIndex" : 0,
+			"path" : "fltk/src/Fl_Anim_GIF_Image.cxx",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 2,
+			"compileGroupIndex" : 0,
+			"path" : "fltk/src/Fl_Help_Dialog.cxx",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 2,
+			"compileGroupIndex" : 0,
+			"path" : "fltk/src/Fl_ICO_Image.cxx",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 2,
+			"compileGroupIndex" : 0,
+			"path" : "fltk/src/Fl_JPEG_Image.cxx",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 2,
+			"compileGroupIndex" : 0,
+			"path" : "fltk/src/Fl_PNG_Image.cxx",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 2,
+			"compileGroupIndex" : 0,
+			"path" : "fltk/src/Fl_PNM_Image.cxx",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 2,
+			"compileGroupIndex" : 0,
+			"path" : "fltk/src/Fl_Image_Reader.cxx",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 2,
+			"compileGroupIndex" : 0,
+			"path" : "fltk/src/Fl_SVG_Image.cxx",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 2,
+			"compileGroupIndex" : 0,
+			"path" : "fltk/src/nanosvg.cxx",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 2,
+			"compileGroupIndex" : 0,
+			"path" : "fltk/src/drivers/SVG/Fl_SVG_File_Surface.cxx",
+			"sourceGroupIndex" : 0
+		}
+	],
+	"type" : "STATIC_LIBRARY"
+}

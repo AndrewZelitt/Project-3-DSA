@@ -1,0 +1,288 @@
+{
+	"artifacts" : 
+	[
+		{
+			"path" : "Project3app/GUI.exe"
+		},
+		{
+			"path" : "Project3app/GUI.pdb"
+		}
+	],
+	"backtrace" : 1,
+	"backtraceGraph" : 
+	{
+		"commands" : 
+		[
+			"add_executable",
+			"target_link_libraries",
+			"set_property"
+		],
+		"files" : 
+		[
+			"Project3app/CMakeLists.txt",
+			"fltk/src/CMakeLists.txt",
+			"fltk/png/CMakeLists.txt"
+		],
+		"nodes" : 
+		[
+			{
+				"file" : 0
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 6,
+				"parent" : 0
+			},
+			{
+				"command" : 1,
+				"file" : 0,
+				"line" : 8,
+				"parent" : 0
+			},
+			{
+				"file" : 1
+			},
+			{
+				"command" : 1,
+				"file" : 1,
+				"line" : 815,
+				"parent" : 3
+			},
+			{
+				"command" : 1,
+				"file" : 1,
+				"line" : 773,
+				"parent" : 3
+			},
+			{
+				"file" : 2
+			},
+			{
+				"command" : 1,
+				"file" : 2,
+				"line" : 101,
+				"parent" : 6
+			},
+			{
+				"command" : 2,
+				"file" : 0,
+				"line" : 11,
+				"parent" : 0
+			}
+		]
+	},
+	"compileGroups" : 
+	[
+		{
+			"compileCommandFragments" : 
+			[
+				{
+					"fragment" : "/DWIN32 /D_WINDOWS /W3 /GR /EHsc /MDd /Zi /Ob0 /Od /RTC1 -std:c++20"
+				}
+			],
+			"defines" : 
+			[
+				{
+					"backtrace" : 2,
+					"define" : "HAVE_PNG_GET_VALID=1"
+				},
+				{
+					"backtrace" : 2,
+					"define" : "HAVE_PNG_H=1"
+				},
+				{
+					"backtrace" : 2,
+					"define" : "HAVE_PNG_SET_TRNS_TO_ALPHA=1"
+				}
+			],
+			"includes" : 
+			[
+				{
+					"backtrace" : 2,
+					"path" : "C:/Users/andre/source/repos/Project-3-DSA/out/build/x64-debug/fltk/src/.."
+				},
+				{
+					"backtrace" : 2,
+					"path" : "C:/Users/andre/source/repos/Project-3-DSA/fltk/src/.."
+				},
+				{
+					"backtrace" : 2,
+					"path" : "C:/Program Files (x86)/Windows Kits/10/Include/10.0.22621.0/um"
+				},
+				{
+					"backtrace" : 2,
+					"path" : "C:/Users/andre/source/repos/Project-3-DSA/fltk/jpeg"
+				},
+				{
+					"backtrace" : 2,
+					"path" : "C:/Users/andre/source/repos/Project-3-DSA/fltk/png"
+				}
+			],
+			"language" : "CXX",
+			"languageStandard" : 
+			{
+				"backtraces" : 
+				[
+					8
+				],
+				"standard" : "20"
+			},
+			"sourceIndexes" : 
+			[
+				0
+			]
+		}
+	],
+	"dependencies" : 
+	[
+		{
+			"backtrace" : 2,
+			"id" : "fltk_z::@58d6b2e6b53320319fb5"
+		},
+		{
+			"backtrace" : 2,
+			"id" : "fltk_png::@87a2345ff5bcb04603f1"
+		},
+		{
+			"backtrace" : 2,
+			"id" : "fltk_jpeg::@42b24047a6d02014a933"
+		},
+		{
+			"backtrace" : 2,
+			"id" : "fltk_images::@fd19560740077aedf212"
+		},
+		{
+			"backtrace" : 2,
+			"id" : "fltk::@fd19560740077aedf212"
+		},
+		{
+			"backtrace" : 2,
+			"id" : "fltk_gl::@fd19560740077aedf212"
+		}
+	],
+	"id" : "GUI::@b1954038a3fbc5c81c8f",
+	"link" : 
+	{
+		"commandFragments" : 
+		[
+			{
+				"fragment" : "/DWIN32 /D_WINDOWS /W3 /GR /EHsc /MDd /Zi /Ob0 /Od /RTC1",
+				"role" : "flags"
+			},
+			{
+				"fragment" : "/machine:x64 /debug /INCREMENTAL /subsystem:console",
+				"role" : "flags"
+			},
+			{
+				"backtrace" : 2,
+				"fragment" : "-LIBPATH:C:\\Users\\andre\\source\\repos\\Project-3-DSA\\out\\build\\x64-debug\\fltk\\src\\..\\lib",
+				"role" : "libraryPath"
+			},
+			{
+				"backtrace" : 2,
+				"fragment" : "fltk\\lib\\fltkd.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 2,
+				"fragment" : "fltk\\lib\\fltk_gld.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 2,
+				"fragment" : "fltk\\lib\\fltk_imagesd.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 2,
+				"fragment" : "fltk\\lib\\fltk_jpegd.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 2,
+				"fragment" : "fltk\\lib\\fltk_pngd.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 4,
+				"fragment" : "opengl32.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 4,
+				"fragment" : "glu32.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 2,
+				"fragment" : "fltk\\lib\\fltkd.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 5,
+				"fragment" : "comctl32.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 5,
+				"fragment" : "ws2_32.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 5,
+				"fragment" : "gdiplus.lib",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 7,
+				"fragment" : "fltk\\lib\\fltk_zd.lib",
+				"role" : "libraries"
+			},
+			{
+				"fragment" : "kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib",
+				"role" : "libraries"
+			}
+		],
+		"language" : "CXX"
+	},
+	"name" : "GUI",
+	"nameOnDisk" : "GUI.exe",
+	"paths" : 
+	{
+		"build" : "Project3app",
+		"source" : "Project3app"
+	},
+	"sourceGroups" : 
+	[
+		{
+			"name" : "Source Files",
+			"sourceIndexes" : 
+			[
+				0
+			]
+		},
+		{
+			"name" : "Header Files",
+			"sourceIndexes" : 
+			[
+				1
+			]
+		}
+	],
+	"sources" : 
+	[
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "Project3app/GUI.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"path" : "Project3app/GUI.h",
+			"sourceGroupIndex" : 1
+		}
+	],
+	"type" : "EXECUTABLE"
+}

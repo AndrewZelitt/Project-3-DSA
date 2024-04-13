@@ -2,9 +2,9 @@
 #pragma once
 
 #include "GUI.h"
+#include "FL/FL.H"
 #include <iostream>
 #include <vector>
-#include <FL/FL.H>
 
 
 

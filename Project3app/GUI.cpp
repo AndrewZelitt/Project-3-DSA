@@ -8,5 +8,7 @@ using namespace std;
 int main() {
 
 	cout << "hello world";
+
+	cout << "\nholy hell I now have a working console application :)";
 	return 0;
 }

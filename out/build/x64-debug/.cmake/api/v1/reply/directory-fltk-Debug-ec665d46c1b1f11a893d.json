@@ -1,0 +1,183 @@
+{
+	"backtraceGraph" : 
+	{
+		"commands" : 
+		[
+			"install",
+			"include"
+		],
+		"files" : 
+		[
+			"fltk/CMake/install.cmake",
+			"fltk/CMakeLists.txt"
+		],
+		"nodes" : 
+		[
+			{
+				"file" : 1
+			},
+			{
+				"command" : 1,
+				"file" : 1,
+				"line" : 184,
+				"parent" : 0
+			},
+			{
+				"file" : 0,
+				"parent" : 1
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 32,
+				"parent" : 2
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 40,
+				"parent" : 2
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 59,
+				"parent" : 2
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 71,
+				"parent" : 2
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 76,
+				"parent" : 2
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 101,
+				"parent" : 2
+			}
+		]
+	},
+	"installers" : 
+	[
+		{
+			"backtrace" : 3,
+			"component" : "Unspecified",
+			"destination" : "include",
+			"paths" : 
+			[
+				"fltk/FL"
+			],
+			"type" : "directory"
+		},
+		{
+			"backtrace" : 4,
+			"component" : "Unspecified",
+			"destination" : "include",
+			"paths" : 
+			[
+				"out/build/x64-debug/fltk/FL"
+			],
+			"type" : "directory"
+		},
+		{
+			"backtrace" : 5,
+			"component" : "Unspecified",
+			"destination" : "CMake",
+			"exportName" : "FLTK-Targets",
+			"exportTargets" : 
+			[
+				{
+					"id" : "fltk_z::@58d6b2e6b53320319fb5",
+					"index" : 9
+				},
+				{
+					"id" : "fltk_png::@87a2345ff5bcb04603f1",
+					"index" : 8
+				},
+				{
+					"id" : "fltk_jpeg::@42b24047a6d02014a933",
+					"index" : 7
+				},
+				{
+					"id" : "fltk::@fd19560740077aedf212",
+					"index" : 1
+				},
+				{
+					"id" : "fltk_forms::@fd19560740077aedf212",
+					"index" : 4
+				},
+				{
+					"id" : "fltk_images::@fd19560740077aedf212",
+					"index" : 6
+				},
+				{
+					"id" : "fltk_gl::@fd19560740077aedf212",
+					"index" : 5
+				},
+				{
+					"id" : "fluid::@6e848ad79b3f171d8f57",
+					"index" : 10
+				},
+				{
+					"id" : "fluid-cmd::@6e848ad79b3f171d8f57",
+					"index" : 11
+				},
+				{
+					"id" : "fltk-options::@44f8237b241a72026e5c",
+					"index" : 2
+				},
+				{
+					"id" : "fltk-options-cmd::@44f8237b241a72026e5c",
+					"index" : 3
+				}
+			],
+			"paths" : 
+			[
+				"fltk/CMakeFiles/Export/df49adab93b9e0c10c64f72458b31971/FLTK-Targets.cmake"
+			],
+			"type" : "export"
+		},
+		{
+			"backtrace" : 6,
+			"component" : "Unspecified",
+			"destination" : "CMake",
+			"paths" : 
+			[
+				"out/build/x64-debug/fltk/etc/FLTKConfig.cmake"
+			],
+			"type" : "file"
+		},
+		{
+			"backtrace" : 7,
+			"component" : "Unspecified",
+			"destination" : "CMake",
+			"paths" : 
+			[
+				"fltk/CMake/FLTK-Functions.cmake"
+			],
+			"type" : "file"
+		},
+		{
+			"backtrace" : 8,
+			"component" : "Unspecified",
+			"destination" : "bin",
+			"paths" : 
+			[
+				"out/build/x64-debug/fltk/bin/fltk-config"
+			],
+			"type" : "file"
+		}
+	],
+	"paths" : 
+	{
+		"build" : "fltk",
+		"source" : "fltk"
+	}
+}

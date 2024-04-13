@@ -1,0 +1,330 @@
+{
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"childIndexes" : 
+					[
+						1,
+						2
+					],
+					"hasInstallRule" : true,
+					"jsonFile" : "directory-.-Debug-d0094a50bb2071803777.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.8"
+					},
+					"projectIndex" : 0,
+					"source" : "."
+				},
+				{
+					"build" : "Project3app",
+					"jsonFile" : "directory-Project3app-Debug-ea95e5c83a239bae8a42.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.8"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 0,
+					"source" : "Project3app",
+					"targetIndexes" : 
+					[
+						0
+					]
+				},
+				{
+					"build" : "fltk",
+					"childIndexes" : 
+					[
+						3,
+						4,
+						5,
+						6,
+						7,
+						8
+					],
+					"hasInstallRule" : true,
+					"jsonFile" : "directory-fltk-Debug-ec665d46c1b1f11a893d.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.15.0"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 1,
+					"source" : "fltk",
+					"targetIndexes" : 
+					[
+						13
+					]
+				},
+				{
+					"build" : "fltk/zlib",
+					"hasInstallRule" : true,
+					"jsonFile" : "directory-fltk.zlib-Debug-b0c2be4a84293949f3eb.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.15.0"
+					},
+					"parentIndex" : 2,
+					"projectIndex" : 1,
+					"source" : "fltk/zlib",
+					"targetIndexes" : 
+					[
+						9
+					]
+				},
+				{
+					"build" : "fltk/png",
+					"hasInstallRule" : true,
+					"jsonFile" : "directory-fltk.png-Debug-27d19d7a561b66d4f729.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.15.0"
+					},
+					"parentIndex" : 2,
+					"projectIndex" : 1,
+					"source" : "fltk/png",
+					"targetIndexes" : 
+					[
+						8
+					]
+				},
+				{
+					"build" : "fltk/jpeg",
+					"hasInstallRule" : true,
+					"jsonFile" : "directory-fltk.jpeg-Debug-40bba70fd62c040e317d.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.15.0"
+					},
+					"parentIndex" : 2,
+					"projectIndex" : 1,
+					"source" : "fltk/jpeg",
+					"targetIndexes" : 
+					[
+						7
+					]
+				},
+				{
+					"build" : "fltk/src",
+					"hasInstallRule" : true,
+					"jsonFile" : "directory-fltk.src-Debug-c889fb366a7bbae07381.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.15.0"
+					},
+					"parentIndex" : 2,
+					"projectIndex" : 1,
+					"source" : "fltk/src",
+					"targetIndexes" : 
+					[
+						1,
+						4,
+						5,
+						6
+					]
+				},
+				{
+					"build" : "fltk/fluid",
+					"hasInstallRule" : true,
+					"jsonFile" : "directory-fltk.fluid-Debug-6e7fc13ca7d77dfac182.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.15.0"
+					},
+					"parentIndex" : 2,
+					"projectIndex" : 1,
+					"source" : "fltk/fluid",
+					"targetIndexes" : 
+					[
+						10,
+						11,
+						12
+					]
+				},
+				{
+					"build" : "fltk/fltk-options",
+					"hasInstallRule" : true,
+					"jsonFile" : "directory-fltk.fltk-options-Debug-35fb2f8748345c25329e.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.15.0"
+					},
+					"parentIndex" : 2,
+					"projectIndex" : 1,
+					"source" : "fltk/fltk-options",
+					"targetIndexes" : 
+					[
+						2,
+						3
+					]
+				}
+			],
+			"name" : "Debug",
+			"projects" : 
+			[
+				{
+					"childIndexes" : 
+					[
+						1
+					],
+					"directoryIndexes" : 
+					[
+						0,
+						1
+					],
+					"name" : "Project-3-DSA",
+					"targetIndexes" : 
+					[
+						0
+					]
+				},
+				{
+					"directoryIndexes" : 
+					[
+						2,
+						3,
+						4,
+						5,
+						6,
+						7,
+						8
+					],
+					"name" : "FLTK",
+					"parentIndex" : 0,
+					"targetIndexes" : 
+					[
+						1,
+						2,
+						3,
+						4,
+						5,
+						6,
+						7,
+						8,
+						9,
+						10,
+						11,
+						12,
+						13
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 1,
+					"id" : "GUI::@b1954038a3fbc5c81c8f",
+					"jsonFile" : "target-GUI-Debug-8fe2aa166af07cb03d9f.json",
+					"name" : "GUI",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 6,
+					"id" : "fltk::@fd19560740077aedf212",
+					"jsonFile" : "target-fltk-Debug-7ecaaaa14e4a869aee02.json",
+					"name" : "fltk",
+					"projectIndex" : 1
+				},
+				{
+					"directoryIndex" : 8,
+					"id" : "fltk-options::@44f8237b241a72026e5c",
+					"jsonFile" : "target-fltk-options-Debug-9fa9854eeb894459645e.json",
+					"name" : "fltk-options",
+					"projectIndex" : 1
+				},
+				{
+					"directoryIndex" : 8,
+					"id" : "fltk-options-cmd::@44f8237b241a72026e5c",
+					"jsonFile" : "target-fltk-options-cmd-Debug-76b3c328023383f19676.json",
+					"name" : "fltk-options-cmd",
+					"projectIndex" : 1
+				},
+				{
+					"directoryIndex" : 6,
+					"id" : "fltk_forms::@fd19560740077aedf212",
+					"jsonFile" : "target-fltk_forms-Debug-c634f506879e092c5a0f.json",
+					"name" : "fltk_forms",
+					"projectIndex" : 1
+				},
+				{
+					"directoryIndex" : 6,
+					"id" : "fltk_gl::@fd19560740077aedf212",
+					"jsonFile" : "target-fltk_gl-Debug-ef45ed427f4350b0665a.json",
+					"name" : "fltk_gl",
+					"projectIndex" : 1
+				},
+				{
+					"directoryIndex" : 6,
+					"id" : "fltk_images::@fd19560740077aedf212",
+					"jsonFile" : "target-fltk_images-Debug-0d05faea6e707d794b62.json",
+					"name" : "fltk_images",
+					"projectIndex" : 1
+				},
+				{
+					"directoryIndex" : 5,
+					"id" : "fltk_jpeg::@42b24047a6d02014a933",
+					"jsonFile" : "target-fltk_jpeg-Debug-e14a02557ec70af32702.json",
+					"name" : "fltk_jpeg",
+					"projectIndex" : 1
+				},
+				{
+					"directoryIndex" : 4,
+					"id" : "fltk_png::@87a2345ff5bcb04603f1",
+					"jsonFile" : "target-fltk_png-Debug-932491996e1ac28711a1.json",
+					"name" : "fltk_png",
+					"projectIndex" : 1
+				},
+				{
+					"directoryIndex" : 3,
+					"id" : "fltk_z::@58d6b2e6b53320319fb5",
+					"jsonFile" : "target-fltk_z-Debug-74f2cdc5759e8de06cfc.json",
+					"name" : "fltk_z",
+					"projectIndex" : 1
+				},
+				{
+					"directoryIndex" : 7,
+					"id" : "fluid::@6e848ad79b3f171d8f57",
+					"jsonFile" : "target-fluid-Debug-24b5e8740505e6cb06af.json",
+					"name" : "fluid",
+					"projectIndex" : 1
+				},
+				{
+					"directoryIndex" : 7,
+					"id" : "fluid-cmd::@6e848ad79b3f171d8f57",
+					"jsonFile" : "target-fluid-cmd-Debug-dd37016b354ccd999c5d.json",
+					"name" : "fluid-cmd",
+					"projectIndex" : 1
+				},
+				{
+					"directoryIndex" : 7,
+					"id" : "fluid-lib::@6e848ad79b3f171d8f57",
+					"jsonFile" : "target-fluid-lib-Debug-a1a684ee22a35de36aa9.json",
+					"name" : "fluid-lib",
+					"projectIndex" : 1
+				},
+				{
+					"directoryIndex" : 2,
+					"id" : "uninstall::@3ee085666c44a9664672",
+					"jsonFile" : "target-uninstall-Debug-ac1564bcaac458586539.json",
+					"name" : "uninstall",
+					"projectIndex" : 1
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "C:/Users/andre/source/repos/Project-3-DSA/out/build/x64-debug",
+		"source" : "C:/Users/andre/source/repos/Project-3-DSA"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 6
+	}
+}

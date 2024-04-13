@@ -2,7 +2,7 @@
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
-  set(CMAKE_INSTALL_PREFIX "C:/Users/andre/source/repos/Project-3-DSA/out/install/x64-debug")
+  set(CMAKE_INSTALL_PREFIX "C:/Users/andre/Source/Repos/Project-3-DSA/out/install/x64-debug")
 endif()
 string(REGEX REPLACE "/$" "" CMAKE_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}")
 
@@ -35,6 +35,7 @@ endif()
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for each subdirectory.
   include("C:/Users/andre/source/repos/Project-3-DSA/out/build/x64-debug/Project3app/cmake_install.cmake")
+  include("C:/Users/andre/source/repos/Project-3-DSA/out/build/x64-debug/fltk/cmake_install.cmake")
 
 endif()
 

@@ -7,3 +7,5 @@ project ("Project-3-DSA")
 
 # Include sub-projects.
 add_subdirectory ("Project3app")
+
+add_subdirectory("fltk")
