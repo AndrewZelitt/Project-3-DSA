@@ -4,6 +4,8 @@
 #include "GUI.h"
 #include <iostream>
 #include <vector>
+#include <string>
+#include <ctype.h>
 
 #include "FL/FL.H"
 #include <FL/Fl_Window.H>
@@ -15,8 +17,8 @@
 #include <FL/fl_Table.H>
 #include <FL/fl_draw.H>
 #include <FL/Fl_Table_Row.H>
-
-
+#include <FL/Fl_Double_Window.H>
+#include <FL/fl_Scroll.H>
 
 
 #include "B+tree.cpp"
