@@ -18,19 +18,40 @@ public:
 		// Rows
 		rows(datastore.size());                    // how many rows
 		row_header(1);              // enable row headers (along left)
+		row_header_width(90);
 		row_height_all(20);         // default height of rows
 		row_resize(0);              // disable row resizing
 		// Cols
 		cols(5);             // how many columns
 		col_header(1);              // enable column headers (along top)
 		//col_width_all(w/5-50);          // default width of columns
-		col_width_all(100);
+		col_width_all(75);
 		col_resize(1);              // enable column resizing
 		end();
 	}
 	void add_item(vector<const char*> column);
-
+	void resetArray() {
+		datastore.clear();
+	}
 	//void autowidth(int pad);
+	void update_list() {
+		rows(datastore.size());
+		int w = 0;
+		int h = 0;
+		int pad = 0;
+		/*
+		for (int r = 0; r < (int)datastore.size(); r++) {
+			for (int c = 0; c < (int)datastore[r].size(); c++) {
+				w = 0; fl_measure(datastore[r][c], w, h, 0);       // pixel width of row text
+				if ((w + pad) > col_width(c)) {
+					col_width(c, (w + pad));
+				}
+			}
+		}*/
+		col_width_all((1380 - 130) / 5 - 3);
+		table_resized();
+		redraw();
+	}
 	void DrawData(const char* s, int X, int Y, int W, int H) {
 		fl_push_clip(X, Y, W, H);
 		// Draw cell bg
@@ -53,7 +74,7 @@ public:
 			DrawHeader(s, X, Y, W, H);
 			return;
 		case CONTEXT_ROW_HEADER:                  // Draw row headers
-			sprintf(s, "%03d:", ROW);                 // "001:", "002:", etc
+			sprintf(s, "%06d:", ROW);                 // "001:", "002:", etc
 			DrawHeader(s, X, Y, W, H);
 			return;
 		case CONTEXT_CELL:                        // Draw data in cells
@@ -74,29 +95,24 @@ public:
 
 void output_table::add_item(vector<const char*> column) {
 	this->datastore.push_back(column);
-	rows(datastore.size());
-	int w = 0;
-	int h = 0;
-	int pad = 10;
-	for (int r = 0; r < (int)datastore.size(); r++) {
-		for (int c = 0; c < (int)datastore[r].size(); c++) {
-			w = 0; fl_measure(datastore[r][c], w, h, 0);       // pixel width of row text
-			if ((w + pad) > col_width(c)) col_width(c, w + pad);
-		}
-	}
-	
-	table_resized();
-	redraw();
+
 }
 
 output_table* result_table = new output_table(10, 2 * 768 / 6, 1366 - 20, 768 - 20);
+vector<vector<const char*>> * input_data = new vector<vector<const char*>> ;
 
 //this is the function that will take in the value of each of the given items when pressed.
 void button_pressed( Fl_Choice* tree_type, Fl_Choice* operation_choice, Fl_Choice* sorting_option, Fl_Input* search_option, Fl_Scroll* scroller) {
 	//decide which inputs to use based on all of the options.
 	//and do the operations that are necessary;
-	vector<const char*> temp = {"Testify","The Battle Of Los Angeles","Rage Against The Machine","210133","1999"};
+	result_table->resetArray();
+	vector<const char*> temp = { "Title","Album","Artists","Duration","Release Year" };
 	result_table->add_item(temp);
+	//this part will need to be changed to become the new object made by the data structures.
+	for (int x = 0; x < input_data->size(); x++) {
+		result_table->add_item(input_data->at(x));
+	}
+	result_table->update_list();
 }
 
 void updated_operation(Fl_Choice* operation_choice, Fl_Choice* sort_choice, Fl_Input* search_option) {
@@ -143,7 +159,7 @@ void output_table::autowidth(int pad) {
 int main(int argc, char** argv) {
 
 
-	Fl_Window* window = new Fl_Window(1366, 768);
+	Fl_Window* window = new Fl_Window(1380, 768);
 	Fl_Box* title = new Fl_Box(0, 0, window->w(), window->h()/10, "Music Men");
 	int x_size_factor = 6;
 	int border_offset = 25;
@@ -185,6 +201,71 @@ int main(int argc, char** argv) {
 
 
 	result_table->show();
+	
+
+
+	ifstream inputFile;
+	inputFile.open("800k1artist.csv");
+
+	if (!inputFile.is_open()) {
+		cout << "error, could not read file :(";
+		return 1;
+	}
+	string buf;
+	stringstream buff;
+	string* temp = new string;
+	//ignore the first line;
+	vector<const char*> row;
+	getline(inputFile, buf);
+	while (getline(inputFile, buf, '\n')) {
+		buff.str(buf);
+		while (getline(buff, *temp, ',')) {
+			if ((*temp)[0] == '[') {
+				(*temp).erase(0, 2);
+				(*temp).pop_back();
+				(*temp).pop_back();
+				row.push_back((*temp).c_str());
+			}
+			else {
+				row.push_back((*temp).c_str());
+			}
+			//cout << temp.c_str() << "\n";
+			temp = new string;
+		}
+
+		buff.clear();
+		//cout << row[0] << "\n";
+		input_data->push_back(row);
+		row.clear();
+	}
+	inputFile.close();
+	inputFile.open("800k1artist2.csv");
+	
+	int line = 0;
+	getline(inputFile, buf);
+	while (getline(inputFile, buf, '\n')) {
+		//I have the full line.
+		buff.str(buf);
+		while (getline(buff, *temp, ',')) {
+			if ((*temp)[0] == '[') {
+				(*temp).erase(0, 2);
+				(*temp).pop_back();
+				(*temp).pop_back();
+				row.push_back((*temp).c_str());
+			}
+			else {
+				row.push_back((*temp).c_str());
+			}
+			//cout << temp.c_str() << "\n";
+			temp = new string;
+		}
+
+		buff.clear();
+		//cout << row[0] << "\n";
+		input_data->push_back(row);
+		row.clear();
+	}
+
 
 	//callback functions
 	//when the go button is pressed
@@ -196,6 +277,11 @@ int main(int argc, char** argv) {
 
 	//FL_FUNCTION_CALLBACK_4(button, button_pressed, Fl_Choice*, tree_type, Fl_Choice*, operation_choice, Fl_Choice*, sorting_option, Fl_Input*, search_option);
 	//window settings
+
+	
+	
+
+
 	window->end();
 	window->resizable(window);
 	window->show(argc, argv);

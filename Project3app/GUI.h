@@ -6,6 +6,9 @@
 #include <vector>
 #include <string>
 #include <ctype.h>
+#include <fstream>
+#include <sstream>
+
 
 #include "FL/FL.H"
 #include <FL/Fl_Window.H>
