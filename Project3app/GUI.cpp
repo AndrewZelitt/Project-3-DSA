@@ -5,15 +5,17 @@
 
 using namespace std;
 
+int winsize = 1380;
+
 //Most of this code has been adapted from the example Code given by FLTK
 class output_table : public Fl_Table {
 private:
 	vector<vector<const char *>> datastore;
-
+	int max_width = 0;
 public:
 
 	output_table(int x, int y, int w, int h, const char* l = 0) : Fl_Table(x, y, w, h, l) {
-		vector<const char*> temp = { "Title","Album","Artists","Duration","Release Year" };
+		vector<const char*> temp = { "Title","Album","Artists","Duration","Year" };
 		datastore.push_back(temp);
 		// Rows
 		rows(datastore.size());                    // how many rows
@@ -28,6 +30,9 @@ public:
 		col_width_all(75);
 		col_resize(1);              // enable column resizing
 		end();
+		table_resized();
+		redraw();
+		max_width = w;
 	}
 	void add_item(vector<const char*> column);
 	void resetArray() {
@@ -42,16 +47,29 @@ public:
 		
 		for (int r = 0; r < (int)datastore.size(); r++) {
 			for (int c = 0; c < (int)datastore[r].size(); c++) {
+				/*
+				if(c < 3){
+					fl_font(FL_HELVETICA, 12); 
+				}else{
+					fl_font(FL_HELVETICA, 16); 
+				}*/
 				w = 0; fl_measure(datastore[r][c], w, h, 0);       // pixel width of row text
 				if ((w + pad) > col_width(c)) {
-					if(c <= 2 || c == 4){
-						if(!(w + pad > (this->w() - 90 - col_width(4) - col_width(3))/3 )){
-						col_width(c, (w + pad));
+					if(c == 3){
+						//cout << w+pad << " Row: "<< r << " Value: " << datastore[r][c] <<"\n" ;
+					}
+					if( c > 2){
+						if(!((w + pad) > (this->w() - row_header_width() - col_width(4) - col_width(3))/3 )){
+							col_width(c, (w + pad));
 						}
+					}
+					if( c < 3){
+						col_width(c, (max_width - row_header_width() - col_width(4) - col_width(3)/3));
 					}
 				}
 			}
 		}
+		cout << this->w() - row_header_width() - (col_width(1) + col_width(2) + col_width(0) + col_width(3) + col_width(4)) << "\n";
 		//col_width_all((1380 - 130) / 5 - 3);
 		table_resized();
 		redraw();
@@ -61,27 +79,34 @@ public:
 		// Draw cell bg
 		fl_color(FL_WHITE); fl_rectf(X, Y, W, H);
 		// Draw cell data
-		fl_color(FL_GRAY0); fl_draw(s, X, Y, W, H, FL_ALIGN_CENTER);
+		fl_color(FL_GRAY0); fl_draw(s, X, Y, W, H, FL_ALIGN_LEFT);
 		// Draw box border
 		fl_color(color()); fl_rect(X, Y, W, H);
 		fl_pop_clip();
 	}
 	
 	void draw_cell(TableContext context, int ROW = 0, int COL = 0, int X = 0, int Y = 0, int W = 0, int H = 0) FL_OVERRIDE {
+		vector<const char*> temp = { "Title","Album","Artists","Duration","Year" };
 		static char s[40];
 		switch (context) {
 		case CONTEXT_STARTPAGE:                   // before page is drawn..
 			fl_font(FL_HELVETICA, 16);              // set the font for our drawing operations
 			return;
 		case CONTEXT_COL_HEADER:                  // Draw column headers
-			sprintf(s, "%c", 'A' + COL);                // "A", "B", "C", etc.
-			DrawHeader(s, X, Y, W, H);
+			//sprintf(s, "%c", 'A' + COL);
+			//DrawHeader(s, X, Y, W, H);
+			DrawHeader(temp[COL], X, Y, W, H);
 			return;
 		case CONTEXT_ROW_HEADER:                  // Draw row headers
-			sprintf(s, "%06d:", ROW);                 // "001:", "002:", etc
+			sprintf(s, "%06d:", ROW + 1);                 // "001:", "002:", etc
 			DrawHeader(s, X, Y, W, H);
 			return;
 		case CONTEXT_CELL:                        // Draw data in cells
+			if(COL < 3){
+				fl_font(FL_HELVETICA, 12); 
+			}else{
+				fl_font(FL_HELVETICA, 16); 
+			}
 			DrawData(datastore[ROW][COL], X, Y, W, H);
 			return;
 		default:
@@ -110,8 +135,7 @@ void button_pressed( Fl_Choice* tree_type, Fl_Choice* operation_choice, Fl_Choic
 	//decide which inputs to use based on all of the options.
 	//and do the operations that are necessary;
 	result_table->resetArray();
-	vector<const char*> temp = { "Title","Album","Artists","Duration","Year" };
-	result_table->add_item(temp);
+
 	//this part will need to be changed to become the new object made by the data structures.
 	for (int x = 0; x < input_data->size(); x++) {
 		result_table->add_item(input_data->at(x));
@@ -139,7 +163,7 @@ void updated_operation(Fl_Choice* operation_choice, Fl_Choice* sort_choice, Fl_I
 //adapted from the example code for autowidth for a table from fltk.
 void output_table::autowidth(int pad) {
 	int w, h;
-	static const char *G_header[] = { "Name", "Album","Artists","Duration","Release Year" };
+	static const char *G_header[] = { "Name", "Album","Artists","Duration","Year" };
 	// Initialize all column widths to header width
 	fl_font(FL_HELVETICA, 12);
 	for (int c = 0; G_header[c]; c++) {
@@ -174,8 +198,9 @@ int main(int argc, char** argv) {
 	Fl_Choice* sorting_option = new Fl_Choice(tree_type->w() + window->w() / border_offset + operation_choice->w(), window->h() / 6, window->w() / x_size_factor, window->h() / 11, "");
 	Fl_Input* search_option = new Fl_Input(tree_type->w() + window->w() / border_offset + operation_choice->w() + sorting_option->w(), window->h() / 6, window->w() / x_size_factor, window->h() / 11, "");
 	Fl_Scroll* scroller = new Fl_Scroll(10, 2 * window->h() / 6, window->w() - 20, window->h() - 10 - window->h() / 6);
-	result_table = new output_table(10, 2 * window->h() / 6, scroller->w() - 30, window->h() - 275);
+	result_table = new output_table(10, 2 * window->h() / 6, scroller->w() - 50, window->h() - 275);
 
+	winsize = window->w();
 	
 	//formatting
 	title->box(FL_UP_BOX);
@@ -199,13 +224,13 @@ int main(int argc, char** argv) {
 
 
 	scroller->type(Fl_Scroll::VERTICAL);
-	scroller->resizable();
+	//scroller->resizable();
 	scroller->add(result_table);
 	scroller->show();
 
 
 	result_table->show();
-	result_table->resizable();
+	//result_table->resizable();
 
 
 	ifstream inputFile;
@@ -221,7 +246,9 @@ int main(int argc, char** argv) {
 	//ignore the first line;
 	vector<const char*> row;
 	getline(inputFile, buf, '\n');
-	while (getline(inputFile, buf, '\n')) {
+	for(int i = 0; i < 100; i++){
+	//while (getline(inputFile, buf, '\n')) {
+		getline(inputFile, buf, '\n');
 		buff.str(buf);
 		while (getline(buff, *temp, ',')) {
 			if ((*temp)[0] == '[') {
@@ -252,7 +279,7 @@ int main(int argc, char** argv) {
 	}
 	inputFile.close();
 	
-	
+	/*
 	inputFile.open("800k1artist2.csv");
 	int line = 0;
 	getline(inputFile, buf, '\n');
@@ -278,17 +305,18 @@ int main(int argc, char** argv) {
 
 		buff.clear();
 		
+		string duration = row[3];
 		string date = row[4];
 		//makes sure a valid row of data is being added.
-		if(date.size() == 4){
+		if(date.size() == 4 && duration.size() <= 8){
 			input_data->push_back(row);
 		}
 		
 		row.clear();
 	}
 	inputFile.close();
-
-	cout << input_data->size() << "\n";
+	*/
+	//cout << input_data->size() << "\n";
 	//callback functions
 	//when the go button is pressed
 	FL_FUNCTION_CALLBACK_5( button, button_pressed, Fl_Choice*, tree_type, Fl_Choice*, operation_choice, Fl_Choice*, sorting_option, Fl_Input*, search_option, Fl_Scroll*, scroller);

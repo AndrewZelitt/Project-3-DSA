@@ -10,7 +10,7 @@
 #include <sstream>
 
 
-#include "FL/FL.H"
+#include <FL/Fl.H>
 #include <FL/Fl_Window.H>
 #include <FL/Fl_Box.H>
 #include <FL/FL_Button.H>
