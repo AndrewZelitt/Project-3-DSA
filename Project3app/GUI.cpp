@@ -144,7 +144,7 @@ void button_pressed(Fl_Choice* tree_type, Fl_Choice* operation_choice, Fl_Choice
 	//and do the operations that are necessary;
 	if (tree_type->value() == 1) {
 		for (int iterations = 1000; iterations < 75000; iterations += 10000 + (iterations % 10000 * 4) * (iterations % 10000 * 4)) {
-			for (int i = 4; i >= 0; i--) {
+			//for (int i = 4; i >= 0; i--) {
 				auto start = std::chrono::high_resolution_clock::now();
 				AVLtree* avl = new AVLtree;
 				avl->raw_database = input_data;
@@ -153,10 +153,12 @@ void button_pressed(Fl_Choice* tree_type, Fl_Choice* operation_choice, Fl_Choice
 				//this part will need to be changed to become the new object made by the data structures.
 				//cout << sorting_option->value() - 1 << "\n";
 				result_table->hide();
-				for (int x = 1; x < iterations; x++) {
-					avl->insert(avl->root, x, i, 0);
+				for (int x = 1; x < input_data->size(); x++) {
+					avl->insert(avl->root, x, 4, 0);
 				}
-				avl->inorder(avl->root);
+				//avl->inorder(avl->root);
+				string input = "Rage Against The Machine";
+				avl->searchID(avl->root, input, 2,0);
 				result_table->resetArray();
 				//if (operation_choice->value() == 2) {
 				for (int x = 0; x < avl->output_for_search.size(); x++) {
@@ -179,15 +181,15 @@ void button_pressed(Fl_Choice* tree_type, Fl_Choice* operation_choice, Fl_Choice
 		*/
 				auto finish = std::chrono::high_resolution_clock::now();
 				auto microseconds = std::chrono::duration_cast<std::chrono::microseconds>(finish - start);
-				vector<string> out = { "Title", "Artist", "Album", "Duration", "Release Year" };
-				std::cout << "Num songs: " << iterations << " sorted by: " << out[i] << ": " << (float)microseconds.count() / 1000000 << "s, num items in array = " << avl->num_items << "\n";
+				vector<string> out = { "Title", "Album", "Artist", "Duration", "Release Year" };
+				std::cout << "Num songs: " << iterations << " sorted by: " << out[2] << ": " << (float)microseconds.count() / 1000000 << "s, num items in array = " << avl->num_items << "\n";
 				avl->output_for_search.clear();
 				avl->deleteAll(avl->root);
 				delete avl;
 				result_table->show();
 				result_table->update_list();
 			}
-		}
+		//}
 	}
 	else if (tree_type->value() == 2) {
 		//put the b+ Tree testing code here

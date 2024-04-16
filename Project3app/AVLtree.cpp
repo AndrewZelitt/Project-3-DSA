@@ -347,16 +347,17 @@ int AVLtree::find_height(TreeNode* root) {
 void AVLtree::searchID(TreeNode* root, string input, int arg, int arg1) {
 
     if (root != NULL) {
-        if (input.c_str() == this->raw_database->at(root->position_in_vector)[arg]) {
+        if (input == (string)this->raw_database->at(root->position_in_vector)[arg]) {
             this->output_for_search.push_back(root->position_in_vector);
             for (TreeNode* duplicates : root->dupes) {
-                this->output_for_search.push_back(duplicates->position_in_vector);
+                searchID(duplicates, input, arg, arg1);
+                //this->output_for_search.push_back(duplicates->position_in_vector);
             }
         }
         else {
             if (arg1) {
                 //ascending
-                if (input.c_str() < this->raw_database->at(root->position_in_vector)[arg]) {
+                if (input< (string)this->raw_database->at(root->position_in_vector)[arg]) {
                     searchID(root->left, input, arg, arg1);
                 }
                 else {
@@ -365,7 +366,7 @@ void AVLtree::searchID(TreeNode* root, string input, int arg, int arg1) {
             }
             else {
                 //descending
-                if (this->raw_database->at(root->position_in_vector)[arg] > input.c_str()) {
+                if ((string)this->raw_database->at(root->position_in_vector)[arg] > input) {
                     searchID(root->left, input, arg, arg1);
             }
                 else {
