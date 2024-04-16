@@ -142,53 +142,56 @@ int status = 0;
 void button_pressed(Fl_Choice* tree_type, Fl_Choice* operation_choice, Fl_Choice* sorting_option, Fl_Input* search_option) {
 	//decide which inputs to use based on all of the options.
 	//and do the operations that are necessary;
-	//if (tree_type->value() == 1) {
-	//for (int iterations = 1000; iterations < 315000; iterations += 10000) {
-		for (int i = 4; i >= 0; i--) {
-			auto start = std::chrono::high_resolution_clock::now();
-			AVLtree* avl = new AVLtree;
-			avl->raw_database = input_data;
-			avl->root = avl->insert(nullptr, 0, sorting_option->value() - 1, 0);
+	if (tree_type->value() == 1) {
+		for (int iterations = 1000; iterations < 75000; iterations += 10000 + (iterations % 10000 * 4) * (iterations % 10000 * 4)) {
+			for (int i = 4; i >= 0; i--) {
+				auto start = std::chrono::high_resolution_clock::now();
+				AVLtree* avl = new AVLtree;
+				avl->raw_database = input_data;
+				avl->root = avl->insert(nullptr, 0, sorting_option->value() - 1, 0);
 
-			//this part will need to be changed to become the new object made by the data structures.
-			//cout << sorting_option->value() - 1 << "\n";
-			result_table->hide();
-			for (int x = 1; x < input_data->size(); x++) {
-				avl->insert(avl->root, x, i, 0);
-				//result_table->add_item(input_data->at(x));
-			}
-			avl->inorder(avl->root);
+				//this part will need to be changed to become the new object made by the data structures.
+				//cout << sorting_option->value() - 1 << "\n";
+				result_table->hide();
+				for (int x = 1; x < iterations; x++) {
+					avl->insert(avl->root, x, i, 0);
+				}
+				avl->inorder(avl->root);
+				result_table->resetArray();
+				//if (operation_choice->value() == 2) {
+				for (int x = 0; x < avl->output_for_search.size(); x++) {
+					result_table->add_item(input_data->at(avl->output_for_search[x]));
+				}
+				status = 1;
+
+				//}
+
+		//}
+		/*
+		if (status == 0) {
 			result_table->resetArray();
-			//if (operation_choice->value() == 2) {
-			for (int x = 0; x < avl->output_for_search.size(); x++) {
-				result_table->add_item(input_data->at(avl->output_for_search[x]));
+			//this part will need to be changed to become the new object made by the data structures.
+			for (int x = 0; x < input_data->size(); x++) {
+				result_table->add_item(input_data->at(x));
 			}
 			status = 1;
-
-			//}
-
-	//}
-	/*
-	if (status == 0) {
-		result_table->resetArray();
-		//this part will need to be changed to become the new object made by the data structures.
-		for (int x = 0; x < input_data->size(); x++) {
-			result_table->add_item(input_data->at(x));
 		}
-		status = 1;
+		*/
+				auto finish = std::chrono::high_resolution_clock::now();
+				auto microseconds = std::chrono::duration_cast<std::chrono::microseconds>(finish - start);
+				vector<string> out = { "Title", "Artist", "Album", "Duration", "Release Year" };
+				std::cout << "Num songs: " << iterations << " sorted by: " << out[i] << ": " << (float)microseconds.count() / 1000000 << "s, num items in array = " << avl->num_items << "\n";
+				avl->output_for_search.clear();
+				avl->deleteAll(avl->root);
+				delete avl;
+				result_table->show();
+				result_table->update_list();
+			}
+		}
 	}
-	*/
-			auto finish = std::chrono::high_resolution_clock::now();
-			auto microseconds = std::chrono::duration_cast<std::chrono::microseconds>(finish - start);
-			vector<string> out = { "Title", "Artist", "Album", "Duration", "Release Year" };
-			std::cout << "Num songs: " << input_data->size() << " sorted by: " << out[i] << ": " << (float)microseconds.count() / 1000000 << "s, num items in array = " << avl->num_items << "\n";
-			avl->output_for_search.clear();
-			avl->deleteAll(avl->root);
-			delete avl;
-			result_table->show();
-			result_table->update_list();
-		}
-	//}
+	else if (tree_type->value() == 2) {
+		//put the b+ Tree testing code here
+	}
 }
 
 void updated_operation(Fl_Choice* operation_choice, Fl_Choice* sort_choice, Fl_Input* search_option) {
