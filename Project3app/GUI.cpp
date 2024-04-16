@@ -143,7 +143,7 @@ void button_pressed(Fl_Choice* tree_type, Fl_Choice* operation_choice, Fl_Choice
 	//decide which inputs to use based on all of the options.
 	//and do the operations that are necessary;
 	if (tree_type->value() == 1) {
-		for (int iterations = 1000; iterations < 75000; iterations += 10000 + (iterations % 10000 * 4) * (iterations % 10000 * 4)) {
+		//for (int iterations = 1000; iterations < 75000; iterations += 10000 + (iterations % 10000 * 4) * (iterations % 10000 * 4)) {
 			//for (int i = 4; i >= 0; i--) {
 				auto start = std::chrono::high_resolution_clock::now();
 				AVLtree* avl = new AVLtree;
@@ -157,8 +157,9 @@ void button_pressed(Fl_Choice* tree_type, Fl_Choice* operation_choice, Fl_Choice
 					avl->insert(avl->root, x, 4, 0);
 				}
 				//avl->inorder(avl->root);
-				string input = "Rage Against The Machine";
-				avl->searchID(avl->root, input, 2,0);
+				string input = "Rage Against the Machine";
+				input = search_option->value();
+				avl->search(avl->root, input, sorting_option->value()-1, 0);
 				result_table->resetArray();
 				//if (operation_choice->value() == 2) {
 				for (int x = 0; x < avl->output_for_search.size(); x++) {
@@ -181,14 +182,16 @@ void button_pressed(Fl_Choice* tree_type, Fl_Choice* operation_choice, Fl_Choice
 		*/
 				auto finish = std::chrono::high_resolution_clock::now();
 				auto microseconds = std::chrono::duration_cast<std::chrono::microseconds>(finish - start);
-				vector<string> out = { "Title", "Album", "Artist", "Duration", "Release Year" };
-				std::cout << "Num songs: " << iterations << " sorted by: " << out[2] << ": " << (float)microseconds.count() / 1000000 << "s, num items in array = " << avl->num_items << "\n";
+				//vector<string> out = { "Title", "Album", "Artist", "Duration", "Release Year" };
+				//std::cout << " sorted by: " << out[2] << ": " << (float)microseconds.count() / 1000000 << "s\n";
 				avl->output_for_search.clear();
 				avl->deleteAll(avl->root);
 				delete avl;
 				result_table->show();
 				result_table->update_list();
-			}
+				float time = (float)microseconds.count() / 1000000;
+				cout << time << "s \n";
+			//}
 		//}
 	}
 	else if (tree_type->value() == 2) {
@@ -274,13 +277,13 @@ int main(int argc, char** argv) {
 
 	button->labelsize(30);
 
-	tree_type->add("Data Structure Choice | AVLtree | Red Black Tree");
+	tree_type->add("Data Structure Choice | AVLtree | B+ Tree");
 	tree_type->value(0);
 
 	operation_choice->add("Operations | Search | Sort");
 	operation_choice->value(0);
 
-	sorting_option->add("Sort By: | Title | Album | Artist name | Duration | Release Year");
+	sorting_option->add("Sort By: | Title | Album | Artist Name | Duration | Release Year");
 	sorting_option->value(0);
 	sorting_option->hide();
 

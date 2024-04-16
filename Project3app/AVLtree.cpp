@@ -172,6 +172,91 @@ void AVLtree::search(TreeNode* root, string input, int arg, int arg1) {
     }
 }
 
+// searching for a specific name, if there are multiple IDs with the same name
+// it will print all of them.
+void AVLtree::searchn(TreeNode* root, string name, int arg) {
+    if (root == nullptr) {
+        return;
+    }
+    if (root == this->root) {
+        this->maxid = max_id(root);
+    }
+    searchn(root->left, name, arg);
+    if (strcmpi(name.c_str(), this->raw_database->at(root->position_in_vector)[arg]) == 0){
+    //if (name == (string)this->raw_database->at(root->position_in_vector)[arg]) {
+        this->output_for_search.push_back(root->position_in_vector);
+        for (TreeNode* duplicates : root->dupes) {
+            if (strcmpi(name.c_str(), this->raw_database->at(duplicates->position_in_vector)[arg]) == 0) {
+            //if (name == (string)this->raw_database->at(duplicates->position_in_vector)[arg]) {
+                this->output_for_search.push_back(duplicates->position_in_vector);
+            }
+        }
+        this->found = 1;
+    }
+    else {
+        for (TreeNode* duplicates : root->dupes) {
+            if (strcmpi(name.c_str(), this->raw_database->at(duplicates->position_in_vector)[arg]) == 0) {
+            //if (name == (string)this->raw_database->at(duplicates->position_in_vector)[arg]) {
+                this->output_for_search.push_back(duplicates->position_in_vector);
+                this->found = 1;
+            }
+        }
+    }
+    searchn(root->right, name, arg);
+    if (root->position_in_vector == this->maxid) {
+        for (TreeNode* duplicates : root->dupes) {
+            if (strcmpi(name.c_str(), this->raw_database->at(duplicates->position_in_vector)[arg]) == 0) {
+            //if (name == (string)this->raw_database->at(duplicates->position_in_vector)[arg]) {
+                this->output_for_search.push_back(duplicates->position_in_vector);
+                this->found = 1;
+            }
+        }
+        if (this->found == 0) {
+            this->found = 0;
+            return;
+        }
+    }
+}
+
+// searching for a specific number value
+void AVLtree::searchID(TreeNode* root, string input, int arg, int arg1) {
+
+    if (root != NULL) {
+        if (input == (string)this->raw_database->at(root->position_in_vector)[arg]) {
+            this->output_for_search.push_back(root->position_in_vector);
+            for (TreeNode* duplicates : root->dupes) {
+                searchID(duplicates, input, arg, arg1);
+                //this->output_for_search.push_back(duplicates->position_in_vector);
+            }
+        }
+        else {
+            if (arg1) {
+                //ascending
+                if (input < (string)this->raw_database->at(root->position_in_vector)[arg]) {
+                    searchID(root->left, input, arg, arg1);
+                }
+                else {
+                    searchID(root->right, input, arg, arg1);
+                }
+            }
+            else {
+                //descending
+                if ((string)this->raw_database->at(root->position_in_vector)[arg] > input) {
+                    searchID(root->left, input, arg, arg1);
+                }
+                else {
+                    searchID(root->right, input, arg, arg1);
+                }
+            }
+        }
+    }
+    else {
+        return;
+        // cout << "unsuccessful\n";
+    }
+}
+
+
 void AVLtree::printLevelCount(void) {
     // prints the height of the tree
     int height = 0;
@@ -343,68 +428,7 @@ int AVLtree::find_height(TreeNode* root) {
     */
 };
 
-// searching for a specific number value
-void AVLtree::searchID(TreeNode* root, string input, int arg, int arg1) {
 
-    if (root != NULL) {
-        if (input == (string)this->raw_database->at(root->position_in_vector)[arg]) {
-            this->output_for_search.push_back(root->position_in_vector);
-            for (TreeNode* duplicates : root->dupes) {
-                searchID(duplicates, input, arg, arg1);
-                //this->output_for_search.push_back(duplicates->position_in_vector);
-            }
-        }
-        else {
-            if (arg1) {
-                //ascending
-                if (input< (string)this->raw_database->at(root->position_in_vector)[arg]) {
-                    searchID(root->left, input, arg, arg1);
-                }
-                else {
-                    searchID(root->right, input, arg, arg1);
-                }
-            }
-            else {
-                //descending
-                if ((string)this->raw_database->at(root->position_in_vector)[arg] > input) {
-                    searchID(root->left, input, arg, arg1);
-            }
-                else {
-                    searchID(root->right, input, arg, arg1);
-                }
-            }
-        }
-    }
-    else {
-        cout << "unsuccessful\n";
-    }
-}
-
-// searching for a specific name, if there are multiple IDs with the same name
-// it will print all of them.
-void AVLtree::searchn(TreeNode* root, string name, int arg) {
-    if (root == nullptr) {
-        return;
-    }
-    if (root == this->root) {
-        this->maxid = max_id(root);
-    }
-    searchn(root->left, name, arg);
-    if (name.c_str() == this->raw_database->at(root->position_in_vector)[arg] ) {
-        this->output_for_search.push_back(root->position_in_vector);
-        for (TreeNode* duplicates : root->dupes) {
-            this->output_for_search.push_back(duplicates->position_in_vector);
-        }
-        this->found = 1;
-    }
-    searchn(root->right, name, arg);
-    if (root->position_in_vector == this->maxid) {
-        if (this->found == 0) {
-            this->found = 0;
-            return;
-        }
-    }
-}
 
 // finds the farthest right value used with the searchname function
 int AVLtree::max_id(TreeNode* root) {
