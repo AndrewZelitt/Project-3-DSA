@@ -3,7 +3,7 @@
 #
 
 # Add source to this project's executable.
-add_executable (GUI "GUI.cpp" "GUI.h" )
+add_executable (GUI "GUI.cpp" "GUI.h"  "AVLtree.H" )
 
 #add_library(CSV ${CMAKE_CURRENT_SOURCE_DIR} "800k1artist.csv" "800k1artist2.csv")
 

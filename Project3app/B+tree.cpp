@@ -1,6 +1,8 @@
 //written by Garrett McClay
 //haven't tested it much but it compiles and seems
 // to at least partially work with the few inputs I tried
+//addding pragma once to make sure stuff doesn't break - Andrew
+#pragma once
 
 #include <iostream>
 #include <vector>
@@ -406,7 +408,7 @@ public:
 
 
 };
-
+/*
 int main() {
     // Create B+ tree instance
     BPlusTree tree;
@@ -431,3 +433,4 @@ int main() {
 
     return 0;
 }
+*/
