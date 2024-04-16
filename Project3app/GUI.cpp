@@ -139,35 +139,58 @@ vector<vector<const char*>> * input_data = new vector<vector<const char*>> ;
 int status = 0;
 
 //this is the function that will take in the value of each of the given items when pressed.
-void button_pressed(Fl_Choice* tree_type, Fl_Choice* operation_choice, Fl_Choice* sorting_option, Fl_Input* search_option) {
+void button_pressed(Fl_Choice* tree_type, Fl_Choice* operation_choice, Fl_Choice* sorting_option, Fl_Input* search_option, Fl_Choice* sort_dir) {
 	//decide which inputs to use based on all of the options.
 	//and do the operations that are necessary;
+	int op_choice = operation_choice->value();
+	int arg  = sorting_option->value(); 
+	int arg1 = sort_dir->value();
+	int insertion_arg = 4;
+	if(arg == 0 || arg == 5){
+		arg = 5;
+	}
 	if (tree_type->value() == 1) {
 		//for (int iterations = 1000; iterations < 75000; iterations += 10000 + (iterations % 10000 * 4) * (iterations % 10000 * 4)) {
 			//for (int i = 4; i >= 0; i--) {
-				auto start = std::chrono::high_resolution_clock::now();
+				if(op_choice == 1){
+					 insertion_arg = 5;
+				}else if(op_choice == 2){
+					 insertion_arg = arg;
+				}
 				AVLtree* avl = new AVLtree;
 				avl->raw_database = input_data;
-				avl->root = avl->insert(nullptr, 0, sorting_option->value() - 1, 0);
+				auto start = std::chrono::high_resolution_clock::now();
+				avl->root = avl->insert(nullptr, 0, insertion_arg-1, arg1);
 
 				//this part will need to be changed to become the new object made by the data structures.
 				//cout << sorting_option->value() - 1 << "\n";
 				result_table->hide();
 				for (int x = 1; x < input_data->size(); x++) {
-					avl->insert(avl->root, x, 4, 0);
+					avl->insert(avl->root, x, insertion_arg-1, arg1);
 				}
-				//avl->inorder(avl->root);
-				string input = "Rage Against the Machine";
-				input = search_option->value();
-				avl->search(avl->root, input, sorting_option->value()-1, 0);
+				auto finish = std::chrono::high_resolution_clock::now();
+				auto microseconds = std::chrono::duration_cast<std::chrono::microseconds>(finish - start);
+				auto start1 = std::chrono::high_resolution_clock::now();
+				if(op_choice == 2){
+					//just output the sorted data
+					avl->inorder(avl->root);
+				}else if(op_choice == 1){
+
+					//do search
+					string input = "Rage Against the Machine";
+					if(search_option->value() != ""){
+						input = search_option->value();
+					}
+					
+					avl->search(avl->root, input, sorting_option->value()-1, 0);
+				}
 				result_table->resetArray();
-				//if (operation_choice->value() == 2) {
+				auto finish1 = std::chrono::high_resolution_clock::now();
+				auto microseconds1 = std::chrono::duration_cast<std::chrono::microseconds>(finish1 - start1);
 				for (int x = 0; x < avl->output_for_search.size(); x++) {
 					result_table->add_item(input_data->at(avl->output_for_search[x]));
 				}
 				status = 1;
-
-				//}
 
 		//}
 		/*
@@ -180,17 +203,20 @@ void button_pressed(Fl_Choice* tree_type, Fl_Choice* operation_choice, Fl_Choice
 			status = 1;
 		}
 		*/
-				auto finish = std::chrono::high_resolution_clock::now();
-				auto microseconds = std::chrono::duration_cast<std::chrono::microseconds>(finish - start);
+				
 				//vector<string> out = { "Title", "Album", "Artist", "Duration", "Release Year" };
 				//std::cout << " sorted by: " << out[2] << ": " << (float)microseconds.count() / 1000000 << "s\n";
+				cout << "Num items parsed: " << avl->num_items << "\n";
+				cout << "Height of tree: " << avl->root->height << "\n";
 				avl->output_for_search.clear();
 				avl->deleteAll(avl->root);
 				delete avl;
 				result_table->show();
 				result_table->update_list();
-				float time = (float)microseconds.count() / 1000000;
-				cout << time << "s \n";
+				float load_time = (float)microseconds.count()  / 1000000;
+				float search_time = (float)microseconds1.count()/1000000;
+				cout << "load_time: " << load_time << "s \n";
+				cout << "search_time: " << search_time << "s\n";
 			//}
 		//}
 	}
@@ -199,19 +225,28 @@ void button_pressed(Fl_Choice* tree_type, Fl_Choice* operation_choice, Fl_Choice
 	}
 }
 
-void updated_operation(Fl_Choice* operation_choice, Fl_Choice* sort_choice, Fl_Input* search_option) {
+void updated_operation(Fl_Choice* operation_choice, Fl_Choice* sort_choice, Fl_Input* search_option, Fl_Choice* sort_dir) {
 	if (operation_choice->value() == 1) {
 		//search option
+		//sort_choice->remove(0);
+		sort_choice->add("Search type");
+		sort_choice->value(6);
 		sort_choice->show();
 		search_option->show();
+		sort_dir->hide();
+
+
 	}
 	else if(operation_choice->value() == 2 ){
 		//sort option
 		sort_choice->show();
 		search_option->hide();
+		sort_dir->show();
 	}
 	else {
 		sort_choice->hide();
+		sort_dir->hide();
+
 	}
 }
 
@@ -261,11 +296,12 @@ int main(int argc, char** argv) {
 	Fl_Box* title = new Fl_Box(10, 0, window->w()-20, window->h()/10, "Music Men");
 	int x_size_factor = 6;
 	int border_offset = 25;
-	Fl_Button* button = new Fl_Button(window->w() - 1.1*window->w() / x_size_factor, window->h() / 6, window->w() / x_size_factor, window->h() / 11, "Go"); //this button will take the arguments from the various drop downs and text boxes.
-	Fl_Choice* tree_type = new Fl_Choice(window->w() / border_offset, window->h() / 6, window->w() / x_size_factor, window->h() / 11, "");
+	Fl_Button* button =   		  new Fl_Button(window->w() - 1.1*window->w() / x_size_factor, window->h() / 6, window->w() / x_size_factor, window->h() / 11, "Go"); //this button will take the arguments from the various drop downs and text boxes.
+	Fl_Choice* tree_type =        new Fl_Choice(window->w() / border_offset, window->h() / 6, window->w() / x_size_factor, window->h() / 11, "");
 	Fl_Choice* operation_choice = new Fl_Choice(tree_type->w() + window->w() / border_offset, window->h() / 6, window->w() / x_size_factor, window->h() / 11, "");
-	Fl_Choice* sorting_option = new Fl_Choice(tree_type->w() + window->w() / border_offset + operation_choice->w(), window->h() / 6, window->w() / x_size_factor, window->h() / 11, "");
-	Fl_Input* search_option = new Fl_Input(tree_type->w() + window->w() / border_offset + operation_choice->w() + sorting_option->w(), window->h() / 6, window->w() / x_size_factor, window->h() / 11, "");
+	Fl_Choice* sorting_option =   new Fl_Choice(tree_type->w() + window->w() / border_offset + operation_choice->w(), window->h() / 6, window->w() / x_size_factor, window->h() / 11, "");
+	Fl_Input* search_option =     new Fl_Input( tree_type->w() + window->w() / border_offset + operation_choice->w() + sorting_option->w(), window->h() / 6, window->w() / x_size_factor, window->h() / 11, "");
+	Fl_Choice* sort_dir =         new Fl_Choice(tree_type->w() + window->w() / border_offset + operation_choice->w() + sorting_option->w() +  search_option->w() , window->h()/6, window->w()/10, window->h()/11, "");
 	result_table = new output_table(10, 2 * window->h() / 6, window->w() - 20, window->h() - 275);
 
 	winsize = window->w();
@@ -293,9 +329,11 @@ int main(int argc, char** argv) {
 
 	result_table->hide();
 
-
+	sort_dir->add("Ascending | Descending");
+	sort_dir->value(0);
+	sort_dir->hide();
 	//reading from the data files.
-
+    {
 	ifstream inputFile;
 	inputFile.open("800k1artist.csv");
 
@@ -309,7 +347,7 @@ int main(int argc, char** argv) {
 	//ignore the first line;
 	vector<const char*> row;
 	getline(inputFile, buf, '\n');
-	//for(int i = 0; i < 100000; i++){
+	//for(int i = 0; i < 10000; i++){
 		//getline(inputFile, buf, '\n');
 	while (getline(inputFile, buf, '\n')) {
 		buff.str(buf);
@@ -347,7 +385,8 @@ int main(int argc, char** argv) {
 		row.clear();
 	}
 	inputFile.close();
-
+	//for smaller datasets for ease of testing.
+	if(1){
 	inputFile.open("800k1artist2.csv");
 	int line = 0;
 	getline(inputFile, buf, '\n');
@@ -387,15 +426,16 @@ int main(int argc, char** argv) {
 		row.clear();
 	}
 	inputFile.close();
-
+	}
+	}
 	//cout << input_data->size() << "\n";
 	//callback functions
 	//when the go button is pressed
-	FL_FUNCTION_CALLBACK_4( button, button_pressed, Fl_Choice*, tree_type, Fl_Choice*, operation_choice, Fl_Choice*, sorting_option, Fl_Input*, search_option, Fl_Scroll*, scroller);
+	FL_FUNCTION_CALLBACK_5( button, button_pressed, Fl_Choice*, tree_type, Fl_Choice*, operation_choice, Fl_Choice*, sorting_option, Fl_Input*, search_option, Fl_Choice* , sort_dir );
 	//when the operation choice is changed
-	FL_FUNCTION_CALLBACK_3(operation_choice, updated_operation, Fl_Choice* , operation_choice, Fl_Choice*, sorting_option, Fl_Input*,  search_option);
+	FL_FUNCTION_CALLBACK_4(operation_choice, updated_operation, Fl_Choice* , operation_choice, Fl_Choice*, sorting_option, Fl_Input*,  search_option, Fl_Choice* , sort_dir);
 	//when the choice of how to search for something is changed. might not be necessary
-	FL_FUNCTION_CALLBACK_3(sorting_option, updated_operation, Fl_Choice*, operation_choice, Fl_Choice*, sorting_option, Fl_Input*, search_option);
+	FL_FUNCTION_CALLBACK_4(sorting_option, updated_operation, Fl_Choice*, operation_choice, Fl_Choice*, sorting_option, Fl_Input*, search_option, Fl_Choice* , sort_dir);
 
 
 

@@ -9,6 +9,14 @@
 #include <cstring>
 
 #include "AVLtree.H"
+
+#ifdef _WIN32
+int strcasecmp(const char* str1, const char* str2) {
+    return strcmpi(str1, str2);
+}
+#endif
+
+
 using namespace std;
 
 
@@ -28,20 +36,25 @@ TreeNode* AVLtree::insert(TreeNode* root, int pos, int arg, int arg1) {
        //if ((string)this->raw_database->at(pos)[arg] < (string)this->raw_database->at(root->position_in_vector)[arg]) {
             // changing the base root of the tree when necessary
             if (root == this->root) {
+                
                 this->root->left = insert(root->left, pos, arg, arg1);
+                root->left->parent = root;
             }
             else {
                 root->left = insert(root->left, pos, arg, arg1);
+                root->left->parent = root;
             }
         }
-        else  if ( strcasecmp(this->raw_database->at(pos)[arg], this->raw_database->at(root->position_in_vector)[arg]) > 0){
+        else  if (strcasecmp(this->raw_database->at(pos)[arg], this->raw_database->at(root->position_in_vector)[arg]) > 0){
        // if ((string)this->raw_database->at(pos)[arg] > (string)this->raw_database->at(root->position_in_vector)[arg]) {
             // changing the base root of the tree when necessary
             if (root == this->root) {
                 this->root->right = insert(root->right, pos, arg, arg1);
+                root->right->parent = root;
             }
             else {
                 root->right = insert(root->right, pos, arg, arg1);
+                root->right->parent = root;
             }
         }
         else  if ( strcasecmp(this->raw_database->at(pos)[arg], this->raw_database->at(root->position_in_vector)[arg]) == 0){
@@ -57,10 +70,14 @@ TreeNode* AVLtree::insert(TreeNode* root, int pos, int arg, int arg1) {
         //if ((string)this->raw_database->at(pos)[arg] > (string)this->raw_database->at(root->position_in_vector)[arg]) {
             // changing the base root of the tree when necessary
             if (root == this->root) {
+
                 this->root->left = insert(root->left, pos, arg, arg1);
+                root->left->parent = root;
             }
             else {
+                
                 root->left = insert(root->left, pos, arg, arg1);
+                root->left->parent = root;
             }
         }
         else  if ( strcasecmp(this->raw_database->at(pos)[arg], this->raw_database->at(root->position_in_vector)[arg]) < 0){
@@ -68,9 +85,12 @@ TreeNode* AVLtree::insert(TreeNode* root, int pos, int arg, int arg1) {
             // changing the base root of the tree when necessary
             if (root == this->root) {
                 this->root->right = insert(root->right, pos, arg, arg1);
+                root->right->parent = root;
             }
             else {
+                
                 root->right = insert(root->right, pos, arg, arg1);
+                root->right->parent = root;
             }
         }else  if ( strcasecmp(this->raw_database->at(pos)[arg], this->raw_database->at(root->position_in_vector)[arg]) == 0){
         //if ((string)this->raw_database->at(pos)[arg] == (string)this->raw_database->at(root->position_in_vector)[arg]) {
@@ -80,6 +100,9 @@ TreeNode* AVLtree::insert(TreeNode* root, int pos, int arg, int arg1) {
     }
     
     // updates the height and balances the tree
+    
+    
+
         find_height(root);
     {
         int height_left = root->left == 0 ? 0 : root->left->height;
@@ -390,14 +413,16 @@ void AVLtree::preorder(TreeNode* root, bool& first) {
 
 // finds the height of a given node
 int AVLtree::find_height(TreeNode* root) {
+
     int h = 0;
     if (root != NULL) {
-        h = 1 + max(root->left == 0 ? 0 : find_height(root->left),
-            root->right == 0 ? 0 : find_height(root->right));
+        h = 1 + max(root->left == 0 ? 0 : (root->left->height),
+            root->right == 0 ? 0 : root->right->height ) ;
         root->height = h;
     }
-
     return h;
+
+
     /*
     //trying possibly faster function of finding heights
     queue<TreeNode*> nodesInLevel;
