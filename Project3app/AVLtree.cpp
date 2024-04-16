@@ -5,6 +5,9 @@
 #include <iostream>
 #include <regex>
 #include <string>
+#include <string.h>
+#include <cstring>
+
 #include "AVLtree.H"
 using namespace std;
 
@@ -21,7 +24,8 @@ TreeNode* AVLtree::insert(TreeNode* root, int pos, int arg, int arg1) {
     case 0:
     {
         // adding the new song into the list based on its decided value
-        if ((string)this->raw_database->at(pos)[arg] < (string)this->raw_database->at(root->position_in_vector)[arg]) {
+        if (strcasecmp(this->raw_database->at(pos)[arg], this->raw_database->at(root->position_in_vector)[arg]) < 0){
+       //if ((string)this->raw_database->at(pos)[arg] < (string)this->raw_database->at(root->position_in_vector)[arg]) {
             // changing the base root of the tree when necessary
             if (root == this->root) {
                 this->root->left = insert(root->left, pos, arg, arg1);
@@ -30,7 +34,8 @@ TreeNode* AVLtree::insert(TreeNode* root, int pos, int arg, int arg1) {
                 root->left = insert(root->left, pos, arg, arg1);
             }
         }
-        else if ((string)this->raw_database->at(pos)[arg] > (string)this->raw_database->at(root->position_in_vector)[arg]) {
+        else  if ( strcasecmp(this->raw_database->at(pos)[arg], this->raw_database->at(root->position_in_vector)[arg]) > 0){
+       // if ((string)this->raw_database->at(pos)[arg] > (string)this->raw_database->at(root->position_in_vector)[arg]) {
             // changing the base root of the tree when necessary
             if (root == this->root) {
                 this->root->right = insert(root->right, pos, arg, arg1);
@@ -39,7 +44,8 @@ TreeNode* AVLtree::insert(TreeNode* root, int pos, int arg, int arg1) {
                 root->right = insert(root->right, pos, arg, arg1);
             }
         }
-        else if ((string)this->raw_database->at(pos)[arg] == (string)this->raw_database->at(root->position_in_vector)[arg]) {
+        else  if ( strcasecmp(this->raw_database->at(pos)[arg], this->raw_database->at(root->position_in_vector)[arg]) == 0){
+        //if ((string)this->raw_database->at(pos)[arg] == (string)this->raw_database->at(root->position_in_vector)[arg]) {
             root->dupes.push_back(new TreeNode(pos));
 
         }
@@ -47,7 +53,8 @@ TreeNode* AVLtree::insert(TreeNode* root, int pos, int arg, int arg1) {
     }
     case 1:
         // adding the new song into the list based on its decided value
-        if ((string)this->raw_database->at(pos)[arg] > (string)this->raw_database->at(root->position_in_vector)[arg]) {
+        if ( strcasecmp(this->raw_database->at(pos)[arg], this->raw_database->at(root->position_in_vector)[arg]) > 0){
+        //if ((string)this->raw_database->at(pos)[arg] > (string)this->raw_database->at(root->position_in_vector)[arg]) {
             // changing the base root of the tree when necessary
             if (root == this->root) {
                 this->root->left = insert(root->left, pos, arg, arg1);
@@ -56,7 +63,8 @@ TreeNode* AVLtree::insert(TreeNode* root, int pos, int arg, int arg1) {
                 root->left = insert(root->left, pos, arg, arg1);
             }
         }
-        else if ((string)this->raw_database->at(pos)[arg] < (string)this->raw_database->at(root->position_in_vector)[arg]) {
+        else  if ( strcasecmp(this->raw_database->at(pos)[arg], this->raw_database->at(root->position_in_vector)[arg]) < 0){
+        //if ((string)this->raw_database->at(pos)[arg] < (string)this->raw_database->at(root->position_in_vector)[arg]) {
             // changing the base root of the tree when necessary
             if (root == this->root) {
                 this->root->right = insert(root->right, pos, arg, arg1);
@@ -64,7 +72,8 @@ TreeNode* AVLtree::insert(TreeNode* root, int pos, int arg, int arg1) {
             else {
                 root->right = insert(root->right, pos, arg, arg1);
             }
-        }else if ((string)this->raw_database->at(pos)[arg] == (string)this->raw_database->at(root->position_in_vector)[arg]) {
+        }else  if ( strcasecmp(this->raw_database->at(pos)[arg], this->raw_database->at(root->position_in_vector)[arg]) == 0){
+        //if ((string)this->raw_database->at(pos)[arg] == (string)this->raw_database->at(root->position_in_vector)[arg]) {
             root->dupes.push_back(new TreeNode(pos));
         }
         break;
@@ -182,11 +191,11 @@ void AVLtree::searchn(TreeNode* root, string name, int arg) {
         this->maxid = max_id(root);
     }
     searchn(root->left, name, arg);
-    if (strcmpi(name.c_str(), this->raw_database->at(root->position_in_vector)[arg]) == 0){
+    if ( strcasecmp(name.c_str(), this->raw_database->at(root->position_in_vector)[arg]) == 0){
     //if (name == (string)this->raw_database->at(root->position_in_vector)[arg]) {
         this->output_for_search.push_back(root->position_in_vector);
         for (TreeNode* duplicates : root->dupes) {
-            if (strcmpi(name.c_str(), this->raw_database->at(duplicates->position_in_vector)[arg]) == 0) {
+            if ( strcasecmp(name.c_str(), this->raw_database->at(duplicates->position_in_vector)[arg]) == 0) {
             //if (name == (string)this->raw_database->at(duplicates->position_in_vector)[arg]) {
                 this->output_for_search.push_back(duplicates->position_in_vector);
             }
@@ -195,7 +204,7 @@ void AVLtree::searchn(TreeNode* root, string name, int arg) {
     }
     else {
         for (TreeNode* duplicates : root->dupes) {
-            if (strcmpi(name.c_str(), this->raw_database->at(duplicates->position_in_vector)[arg]) == 0) {
+            if ( strcasecmp(name.c_str(), this->raw_database->at(duplicates->position_in_vector)[arg]) == 0) {
             //if (name == (string)this->raw_database->at(duplicates->position_in_vector)[arg]) {
                 this->output_for_search.push_back(duplicates->position_in_vector);
                 this->found = 1;
@@ -205,7 +214,7 @@ void AVLtree::searchn(TreeNode* root, string name, int arg) {
     searchn(root->right, name, arg);
     if (root->position_in_vector == this->maxid) {
         for (TreeNode* duplicates : root->dupes) {
-            if (strcmpi(name.c_str(), this->raw_database->at(duplicates->position_in_vector)[arg]) == 0) {
+            if ( strcasecmp(name.c_str(), this->raw_database->at(duplicates->position_in_vector)[arg]) == 0) {
             //if (name == (string)this->raw_database->at(duplicates->position_in_vector)[arg]) {
                 this->output_for_search.push_back(duplicates->position_in_vector);
                 this->found = 1;
