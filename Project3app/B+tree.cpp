@@ -513,6 +513,11 @@ public:
 
 };
 
+/*
+* //please test using the GUI, all you should have to do is run the code and mess with the "button pressed" function. 
+* I have already started doing a little testing but you should be the one to make sure that it works correctly. 
+* Please read the discord as I documented last night that a few methods do not function.
+* The code fails after inserting only 4 items into your structure
 int main() {
     BPlusTree tree;
 
@@ -560,3 +565,4 @@ int main() {
 
     return 0;
 }
+*/

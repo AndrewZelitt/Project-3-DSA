@@ -354,10 +354,8 @@ void button_pressed(Fl_Choice* tree_type, Fl_Choice* operation_choice, Fl_Choice
 			songout.push_back(songs.title.c_str());
 			songout.push_back(songs.album.c_str());
 			songout.push_back(songs.artist.c_str());
-			int duration = songs.length;
-			songout.push_back(to_string(duration).c_str());
-			int year = (songs.year);
-			songout.push_back( to_string(year).c_str());
+			songout.push_back(songs.length.c_str());
+			songout.push_back(songs.year.c_str());
 			result_table->add_item(songout);
 			vector<const char*>().swap(songout);
 			//songout.clear();
