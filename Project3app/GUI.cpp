@@ -142,13 +142,13 @@ int status = 0;
 void button_pressed(Fl_Choice* tree_type, Fl_Choice* operation_choice, Fl_Choice* sorting_option, Fl_Input* search_option, Fl_Choice* sort_dir) {
 	//decide which inputs to use based on all of the options.
 	//and do the operations that are necessary;
-	int op_choice = operation_choice->value();
-	int arg = sorting_option->value();
-	int arg1 = sort_dir->value();
-	int insertion_arg = 4;
-	if (arg == 0) {
-		arg = 5;
-	}
+		int op_choice = operation_choice->value();
+		int arg = sorting_option->value();
+		int arg1 = sort_dir->value();
+		int insertion_arg = 4;
+		if (arg == 0) {
+			arg = 5;
+		}
 	
 
 		if (tree_type->value() == 1) {
@@ -276,9 +276,44 @@ void button_pressed(Fl_Choice* tree_type, Fl_Choice* operation_choice, Fl_Choice
 				}
 				cout << "Average Time: " << (avg_time / 3) << "\n";
 			}
-}
-	else if (tree_type->value() == 2) {
+		} else if (tree_type->value() == 2) {
 		//put the b+ Tree testing code here
+		BPlusTree* BPlus = new BPlusTree;
+		Song* song = new Song;
+		auto start2 = std::chrono::high_resolution_clock::now();
+		for (int i = 0; i < input_data->size(); i++) {
+			song->title = input_data->at(i)[0];
+			song->album = input_data->at(i)[1];
+			song->artist = input_data->at(i)[2];
+			song->length = stoi(input_data->at(i)[3]);
+			song->year = stoi(input_data->at(i)[4]);
+			BPlus->insert(*song);
+			song = new Song;
+		}
+		auto finish2 = std::chrono::high_resolution_clock::now();
+		auto microseconds2 = std::chrono::duration_cast<std::chrono::microseconds>(finish2 - start2);
+		cout << "B+ load time: " << (float) microseconds2.count() / 1000000 << endl;
+		auto start3 = std::chrono::high_resolution_clock::now();
+		vector<Song> searchResult = BPlus->search(search_option->value());
+		auto finish3 = std::chrono::high_resolution_clock::now();
+		auto microseconds3 = std::chrono::duration_cast<std::chrono::microseconds>(finish3 - start3);
+		cout << "B+ search time: " << (float)microseconds3.count() / 1000000 << endl;
+		vector<const char*> songout;
+		result_table->resetArray();
+		for (auto songs : searchResult) {
+			songout.push_back(songs.title.c_str());
+			songout.push_back(songs.album.c_str());
+			songout.push_back(songs.artist.c_str());
+			int duration = songs.length;
+			songout.push_back(to_string(duration).c_str());
+			int year = (songs.year);
+			songout.push_back( to_string(year).c_str());
+			result_table->add_item(songout);
+			songout.clear();
+		}
+		searchResult.clear();
+		result_table->show();
+		result_table->update_list();
 	}
 }
 
@@ -360,6 +395,8 @@ int main(int argc, char** argv) {
 	Fl_Input* search_option =     new Fl_Input( tree_type->w() + window->w() / border_offset + operation_choice->w() + sorting_option->w(), window->h() / 6, window->w() / x_size_factor, window->h() / 11, "");
 	Fl_Choice* sort_dir =         new Fl_Choice(tree_type->w() + window->w() / border_offset + operation_choice->w() + sorting_option->w() +  search_option->w() , window->h()/6, window->w()/10, window->h()/11, "");
 	result_table = new output_table(10, 2 * window->h() / 6, window->w() - 20, window->h() - 275);
+	Fl_Output* stopwatch = new Fl_Output(button->x(), button->y() - button->h()/2 - (button->y() - title->y())/2 , button->w(), button->h(), "");
+	cout << (title->y() - button->y()) / 2 << endl;
 
 	winsize = window->w();
 	
@@ -383,6 +420,9 @@ int main(int argc, char** argv) {
 	search_option->value("Search Argument");
 	search_option->hide();
 
+	stopwatch->value("Time Taken:");
+	stopwatch->value("Time Taken: 15.329329s");
+	
 
 	result_table->hide();
 
@@ -404,9 +444,9 @@ int main(int argc, char** argv) {
 	//ignore the first line;
 	vector<const char*> row;
 	getline(inputFile, buf, '\n');
-	//for(int i = 0; i < 10000; i++){
-		//getline(inputFile, buf, '\n');
-	while (getline(inputFile, buf, '\n')) {
+	for(int i = 0; i < 100; i++){
+		getline(inputFile, buf, '\n');
+	//while (getline(inputFile, buf, '\n')) {
 		buff.str(buf);
 		while (getline(buff, *temp, ',')) {
 			if ((*temp)[0] == '[') {
@@ -443,7 +483,7 @@ int main(int argc, char** argv) {
 	}
 	inputFile.close();
 	//for smaller datasets for ease of testing.
-	if(1){
+	if(0){
 	inputFile.open("800k1artist2.csv");
 	int line = 0;
 	getline(inputFile, buf, '\n');

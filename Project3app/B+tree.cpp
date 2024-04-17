@@ -281,7 +281,11 @@ public:
         }
         return result;
     }
-
+    //If you can add the ability to search by year aswell that would be appreciated, same as duration, the duration is more so just to
+    // not make me have to change the UI - Andrew 
+    // I can also see an issue happening if someone has a title of a song being the same as what is being searched but they 
+    // are looking by for an album by that title. 
+    
     // Helper function for search
     void searchHelper(BPlusTreeNode* node, const string& key, vector<Song>& result) {
         if (node->isLeaf) {
@@ -489,7 +493,7 @@ public:
 
 
 };
-
+/*
 int main() {
     BPlusTree tree;
 
@@ -536,3 +540,4 @@ int main() {
 
     return 0;
 }
+*/

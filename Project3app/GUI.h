@@ -25,7 +25,7 @@
 #include <FL/fl_draw.H>
 #include <FL/Fl_Table_Row.H>
 #include <FL/Fl_Double_Window.H>
-
+#include <FL/Fl_Output.H>
 
 #include "B+tree.cpp"
 #include "AVLtree.cpp"
