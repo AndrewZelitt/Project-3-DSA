@@ -18,8 +18,8 @@ struct Song {
     string title;
     string artist;
     string album;
-    int length;
-    int year;
+    string length;
+    string year;
     // You can add more attributes as needed
 };
 
@@ -43,9 +43,9 @@ public:
 
     // Method to insert a song into the tree
     void insert(const Song& song) {
-        cout << "alittle confused" << endl;
+        cout << "begin inserting" << endl;
         if (root == nullptr) {
-            cout << "why am I in here" << endl;
+            cout << "root is null?" << endl;
             root = new BPlusTreeNode();
             root->songs.push_back(song);
 
@@ -56,7 +56,7 @@ public:
             insertHelper(root, song);
             cout << "ok done" << endl;
         }
-        cout << "how did I get here" << endl;
+        cout << "should be done now" << endl;
     }
 
     // Helper function for insertion
@@ -105,8 +105,7 @@ public:
                 i--;
             }
 
-            cout << "round 2" << endl;
-            cout << "help me god" << endl;
+            cout << "recursion" << endl;
             insertHelper(node->children[i], song);
             cout << "out" << endl;
         }
@@ -141,7 +140,7 @@ public:
         cout << middleSong.title << endl;
         insertIntoParent(node, middleSong, newNode);
 
-        cout << "probably deleting everything" << endl;
+        cout << "finished splitting leaf node" << endl;
     }
 
     // Function to find the parent of a given node
@@ -187,7 +186,7 @@ public:
         // Move half of the keys to the new node
         newNode->songs.assign(node->songs.begin() + mid + 1, node->songs.end());
         node->songs.erase(node->songs.begin() + mid, node->songs.end());
-        cout << "let it known" << endl;
+        cout << "making new node" << endl;
         for (int i = 0; i < newNode->songs.size(); i++) {
             cout << newNode->songs[i].title << endl;
         }
@@ -212,7 +211,7 @@ public:
         // Insert the new node to the parent's children
         cout << parent->children.size() << endl;
         parent->children.insert(parent->children.begin() + distance(parent->children.begin(), find(parent->children.begin(), parent->children.end(), node)) + 1, newNode);
-        cout << "didnt think it would get here" << endl;
+        cout << "added the children in" << endl;
         // If the parent node now has too many keys, split it recursively
         if (parent->songs.size() >= MAX_SONGS_PER_NODE) {
             splitInternalNode(parent);
@@ -222,10 +221,10 @@ public:
 
     // Function to insert a key into the parent node
     void insertIntoParent(BPlusTreeNode* leftChild, const Song& song, BPlusTreeNode* rightChild) {
-        cout << "idk what happens in here" << endl;
+        cout << "insertintoparent" << endl;
         if (root == leftChild) {
             // Create a new root
-            cout << "help" << endl;
+            cout << "make a new root" << endl;
             root = new BPlusTreeNode();
             root->songs.push_back(song);
             root->children.push_back(leftChild);
@@ -236,7 +235,7 @@ public:
             BPlusTreeNode* parent = findParent(root, leftChild);
             cout << song.title << endl;
             parent->songs.push_back(song);
-
+            //using bubble sort for now should probably make more efficient later
             bool swapped;
             for (int i = 0; i < parent->songs.size() - 1; i++) {
                 swapped = false;
@@ -276,33 +275,53 @@ public:
     // Method to search for songs based on criteria like title, artist, etc.
     vector<Song> search(const string& key) {
         vector<Song> result;
+        cout << "search" << endl;
         if (root != nullptr) {
             searchHelper(root, key, result);
         }
+        cout << "printing result" << endl;
         return result;
     }
-    //If you can add the ability to search by year aswell that would be appreciated, same as duration, the duration is more so just to
-    // not make me have to change the UI - Andrew 
-    // I can also see an issue happening if someone has a title of a song being the same as what is being searched but they 
-    // are looking by for an album by that title. 
-    
+
+    //I made it able to search for each attribute and for the instance of a title and album being the same
+    //the best I was able to do was make it return both of them in the results
+
     // Helper function for search
     void searchHelper(BPlusTreeNode* node, const string& key, vector<Song>& result) {
-        if (node->isLeaf) {
+        cout << "search helper" << endl;
+
+        if (node->children.empty()) {
             // Search for the key in the leaf node
             for (const auto& song : node->songs) {
-                if (song.title == key || song.artist == key || song.album == key) {
+                if (song.title == key || song.artist == key || song.album == key || song.length == key || song.year == key) {
+                    cout << "found one" << endl;
                     result.push_back(song);
                 }
             }
         } else {
             // Descend to the appropriate child node
+            /*
             int i = 0;
-            while (i < node->songs.size() && key > node->songs[i].title) {
+
+            while (i < node->songs.size() && key >= node->songs[i].title) {
                 i++;
             }
+
+
+            cout << "recursion" << endl;
+            cout << i << endl;
             searchHelper(node->children[i], key, result);
+            */
+
+            //awful time complexity but this is the only way I could get it to be able to
+            //search for each different attribute
+            //only other way I could think would require resorting the entire tree
+            for (const auto& child : node->children) {
+                searchHelper(child, key, result);
+            }
         }
+
+
     }
 
     // Method to remove a song from the tree
@@ -493,27 +512,27 @@ public:
 
 
 };
-/*
+
 int main() {
     BPlusTree tree;
 
-    Song song1 = {"Bomb", "Artist1", "Album1", 2000, 1992};
-    Song song2 = {"Song", "Artist2", "Album2", 2005, 1995};
-    Song song3 = {"Apple", "Artist3", "Album3", 1354, 2010};
-    Song song0 = {"Write", "Artist0", "Album0", 2019, 2011};
-    Song song4 = {"Dongo", "Artist4", "Album4", 1258, 2010};
-    Song song5 = {"Join", "Artist5", "Album5", 1995, 2010};
-    Song song6 = {"Us", "Artist6", "Album6", 2015, 2010};
-    Song song7 = {"Human", "Artist7", "Album7", 3111510, 2010};
+    Song song1 = {"Bomb", "Artist1", "Album1", "2000", "1992"};
+    Song song2 = {"Song", "Artist2", "Album2", "2005", "1995"};
+    Song song3 = {"Apple", "Artist3", "Album3", "1354", "2010"};
+    Song song0 = {"Write", "Artist0", "Album0", "2019", "2011"};
+    Song song4 = {"Dongo", "Artist4", "Album4", "1258", "2010"};
+    Song song5 = {"Join", "Artist5", "Album5", "1995", "2010"};
+    Song song6 = {"Us", "Artist6", "Album6", "2015", "2010"};
+    Song song7 = {"Human", "Artist7", "Album7", "3111510", "2010"};
 
-    Song song8 = {"Sunshine", "Artist8", "Album8", 180, 2012};
-    Song song9 = {"Moonlight", "Artist9", "Album9", 240, 2013};
-    Song song10 = {"Stars", "Artist10", "Album10", 210, 2014};
-    Song song11 = {"Galaxy", "Artist11", "Album11", 300, 2015};
-    Song song12 = {"Ocean", "Artist12", "Album12", 270, 2016};
-    Song song13 = {"Mountain", "Artist13", "Album13", 320, 2017};
-    Song song14 = {"Forest", "Artist14", "Album14", 280, 2018};
-    Song song15 = {"River", "Artist15", "Album15", 340, 2019};
+    Song song8 = {"Sunshine", "Artist8", "Album8", "180", "2012"};
+    Song song9 = {"Moonlight", "Artist9", "Album9", "240", "2013"};
+    Song song10 = {"Stars", "Artist10", "Album0", "210", "2014"};
+    Song song11 = {"Galaxy", "Artist11", "Album11", "300", "2015"};
+    Song song12 = {"Ocean", "Artist2", "Album12", "2000", "2016"};
+    Song song13 = {"Mountain", "Artist13", "Album13", "320", "2017"};
+    Song song14 = {"Forest", "Artist14", "Album14", "280", "2018"};
+    Song song15 = {"Dongo", "Artist15", "Album15", "340", "2019"};
 
     tree.insert(song1);
     tree.insert(song2);
@@ -531,13 +550,13 @@ int main() {
     tree.insert(song13);
     tree.insert(song14);
     tree.insert(song15);
-    tree.printTree();
+    //tree.printTree();
     // Example search
-    vector<Song> searchResult = tree.search("Title2");
+    cout << "here we go" << endl;
+    vector<Song> searchResult = tree.search("2010");
     for (const auto& song : searchResult) {
-        cout << "Title: " << song.title << ", Artist: " << song.artist << ", Album: " << song.album << ", Year: " << song.year << ", Length: " << song.length << endl;
+        cout << "Title: " << song.title << ", Artist: " << song.artist << ", Album: " << song.album << ", Length: " << song.length << ", Year: " << song.year << endl;
     }
 
     return 0;
 }
-*/
