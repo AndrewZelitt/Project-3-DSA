@@ -83,7 +83,11 @@ public:
 	void DrawData(const char* s, int X, int Y, int W, int H) {
 		fl_push_clip(X, Y, W, H);
 		// Draw cell bg
-		fl_color(FL_WHITE); fl_rectf(X, Y, W, H);
+		char r = 15;
+		char g = 52;
+		char b = 128;
+		fl_color(r, g, b);
+		fl_color(fl_color_average(FL_WHITE,fl_color(), 0.20)); fl_rectf(X, Y, W, H);
 		// Draw cell data
 		fl_color(FL_GRAY0); fl_draw(s, X, Y, W, H, FL_ALIGN_WRAP);
 		// Draw box border
@@ -133,13 +137,38 @@ void output_table::add_item(vector<const char*> column) {
 	this->datastore.push_back(column);
 
 }
+class my_input : public Fl_Input {
+public:
+	Fl_Multiline_Output* stopwatch;
+	my_input(int X, int Y, int W, int H, const char* L = 0) : Fl_Input(X, Y, W, H, L = 0) {
+		stopwatch = new Fl_Multiline_Output(X, Y - H / 2 - (Y - 50) / 2, W, H + 10, "");
+	}
+	void update_timer(float load_time, float search_time, int choice) {
+		string send_to_stopwatch = "";
+		string load = to_string(load_time);
+		string search = to_string(search_time);
+		//sprintf(load, "%04f:", load_time);
+		//sprintf(search, "%04f:", search_time);
+		if (choice == 2) {
+			
+
+			 send_to_stopwatch = "Time for creating Tree: " + load + "s\n" + "Time for traversal " + search + "s";
+		}
+		else {
+			send_to_stopwatch = "Time for creating Tree: " + load + "s\n" + "Time for searching " + search + "s";
+		}
+		//cout << send_to_stopwatch << endl;
+		stopwatch->value(send_to_stopwatch.c_str());
+	}
+};
 
 output_table* result_table = new output_table(10, 2 * 768 / 6, 1366 - 20, 768 - 20);
 vector<vector<const char*>> * input_data = new vector<vector<const char*>> ;
-int status = 0;
 
+int status = 0;
+//this function does most of the things.
 //this is the function that will take in the value of each of the given items when pressed.
-void button_pressed(Fl_Choice* tree_type, Fl_Choice* operation_choice, Fl_Choice* sorting_option, Fl_Input* search_option, Fl_Choice* sort_dir) {
+void button_pressed(Fl_Choice* tree_type, Fl_Choice* operation_choice, Fl_Choice* sorting_option, my_input* search_option, Fl_Choice* sort_dir) {
 	//decide which inputs to use based on all of the options.
 	//and do the operations that are necessary;
 		int op_choice = operation_choice->value();
@@ -149,7 +178,8 @@ void button_pressed(Fl_Choice* tree_type, Fl_Choice* operation_choice, Fl_Choice
 		if (arg == 0) {
 			arg = 5;
 		}
-	
+		float load_time = 0;
+		float search_time = 0;
 
 		if (tree_type->value() == 1) {
 			if (arg != 6) {
@@ -203,8 +233,8 @@ void button_pressed(Fl_Choice* tree_type, Fl_Choice* operation_choice, Fl_Choice
 				delete avl;
 				result_table->show();
 				result_table->update_list();
-				float load_time = (float)microseconds.count() / 1000000;
-				float search_time = (float)microseconds1.count() / 1000000;
+				load_time = (float)microseconds.count() / 1000000;
+				search_time = (float)microseconds1.count() / 1000000;
 				cout << "load_time: " << load_time << "s \n";
 				cout << "search_time: " << search_time << "s\n";
 			}
@@ -253,8 +283,8 @@ void button_pressed(Fl_Choice* tree_type, Fl_Choice* operation_choice, Fl_Choice
 								delete avl;
 								result_table->show();
 								result_table->update_list();
-								float load_time = (float)microseconds.count() / 1000000;
-								float search_time = (float)microseconds1.count() / 1000000;
+								load_time = (float)microseconds.count() / 1000000;
+								search_time = (float)microseconds1.count() / 1000000;
 								combined_time = search_time + load_time;
 								total_time += combined_time;
 								if (combined_time > longest_time) {
@@ -314,7 +344,9 @@ void button_pressed(Fl_Choice* tree_type, Fl_Choice* operation_choice, Fl_Choice
 		searchResult.clear();
 		result_table->show();
 		result_table->update_list();
+		
 	}
+		search_option->update_timer(load_time, search_time, op_choice);
 }
 
 void updated_operation(Fl_Choice* operation_choice, Fl_Choice* sort_choice, Fl_Input* search_option, Fl_Choice* sort_dir) {
@@ -344,8 +376,9 @@ void updated_operation(Fl_Choice* operation_choice, Fl_Choice* sort_choice, Fl_I
 
 
 class my_window : public Fl_Window {
-
+	
 public:
+	
 	my_window(int w, int h) : Fl_Window (w, h) {
 		
 	}
@@ -355,6 +388,12 @@ public:
 		result_table->update_list();
 	}
 };
+
+
+
+
+
+
 
 
 /*
@@ -392,11 +431,10 @@ int main(int argc, char** argv) {
 	Fl_Choice* tree_type =        new Fl_Choice(window->w() / border_offset, window->h() / 6, window->w() / x_size_factor, window->h() / 11, "");
 	Fl_Choice* operation_choice = new Fl_Choice(tree_type->w() + window->w() / border_offset, window->h() / 6, window->w() / x_size_factor, window->h() / 11, "");
 	Fl_Choice* sorting_option =   new Fl_Choice(tree_type->w() + window->w() / border_offset + operation_choice->w(), window->h() / 6, window->w() / x_size_factor, window->h() / 11, "");
-	Fl_Input* search_option =     new Fl_Input( tree_type->w() + window->w() / border_offset + operation_choice->w() + sorting_option->w(), window->h() / 6, window->w() / x_size_factor, window->h() / 11, "");
+	my_input* search_option =     new my_input( tree_type->w() + window->w() / border_offset + operation_choice->w() + sorting_option->w(), window->h() / 6, window->w() / x_size_factor, window->h() / 11, "");
 	Fl_Choice* sort_dir =         new Fl_Choice(tree_type->w() + window->w() / border_offset + operation_choice->w() + sorting_option->w() +  search_option->w() , window->h()/6, window->w()/10, window->h()/11, "");
 	result_table = new output_table(10, 2 * window->h() / 6, window->w() - 20, window->h() - 275);
-	Fl_Output* stopwatch = new Fl_Output(button->x(), button->y() - button->h()/2 - (button->y() - title->y())/2 , button->w(), button->h(), "");
-	cout << (title->y() - button->y()) / 2 << endl;
+	search_option->stopwatch->resize(button->x(), button->y() - button->h() / 2 - (button->y() - title->y()) / 2, button->w(), button->h()/2 + 5);
 
 	winsize = window->w();
 	
@@ -420,8 +458,8 @@ int main(int argc, char** argv) {
 	search_option->value("Search Argument");
 	search_option->hide();
 
-	stopwatch->value("Time Taken:");
-	stopwatch->value("Time Taken: 15.329329s");
+	search_option->stopwatch->value("Time Taken: 0s");
+	search_option->stopwatch->wrap(FL_ALIGN_TOP);
 	
 
 	result_table->hide();
@@ -429,6 +467,23 @@ int main(int argc, char** argv) {
 	sort_dir->add("Ascending | Descending");
 	sort_dir->value(0);
 	sort_dir->hide();
+
+	char r = 15;
+	char g = 52;
+	char b = 128;
+
+	window->color(fl_rgb_color(r, g, b));
+	title->color(fl_rgb_color(r, g, b));
+	title->box(FL_NO_BOX);
+	
+	
+	button->box(FL_UP_BOX);
+	tree_type->box(FL_NO_BOX);
+	operation_choice->box(FL_SHADOW_BOX);
+	search_option->stopwatch->box(FL_FLAT_BOX);
+	sort_dir->box(FL_SHADOW_BOX);
+	
+
 	//reading from the data files.
     {
 	ifstream inputFile;
@@ -528,13 +583,14 @@ int main(int argc, char** argv) {
 	cout << input_data->size() << "\n";
 	//callback functions
 	//when the go button is pressed
-	FL_FUNCTION_CALLBACK_5( button, button_pressed, Fl_Choice*, tree_type, Fl_Choice*, operation_choice, Fl_Choice*, sorting_option, Fl_Input*, search_option, Fl_Choice* , sort_dir );
+	FL_FUNCTION_CALLBACK_5( button, button_pressed, Fl_Choice*, tree_type, Fl_Choice*, operation_choice, Fl_Choice*, sorting_option, my_input*, search_option, Fl_Choice* , sort_dir );
 	//when the operation choice is changed
 	FL_FUNCTION_CALLBACK_4(operation_choice, updated_operation, Fl_Choice* , operation_choice, Fl_Choice*, sorting_option, Fl_Input*,  search_option, Fl_Choice* , sort_dir);
 	//when the choice of how to search for something is changed. might not be necessary
 	FL_FUNCTION_CALLBACK_4(sorting_option, updated_operation, Fl_Choice*, operation_choice, Fl_Choice*, sorting_option, Fl_Input*, search_option, Fl_Choice* , sort_dir);
 
-
+	
+	
 
 
 
