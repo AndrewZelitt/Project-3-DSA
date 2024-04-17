@@ -254,7 +254,7 @@ void AVLtree::searchn(TreeNode* root, string name, int arg) {
 void AVLtree::searchID(TreeNode* root, string input, int arg, int arg1) {
 
     if (root != NULL) {
-        if (input == (string)this->raw_database->at(root->position_in_vector)[arg]) {
+        if (strcasecmp(input.c_str(), this->raw_database->at(root->position_in_vector)[arg]) == 0) {
             this->output_for_search.push_back(root->position_in_vector);
             for (TreeNode* duplicates : root->dupes) {
                 searchID(duplicates, input, arg, arg1);
@@ -264,7 +264,7 @@ void AVLtree::searchID(TreeNode* root, string input, int arg, int arg1) {
         else {
             if (arg1) {
                 //ascending
-                if (input < (string)this->raw_database->at(root->position_in_vector)[arg]) {
+                if (strcasecmp(input.c_str(), this->raw_database->at(root->position_in_vector)[arg]) < 0) {
                     searchID(root->left, input, arg, arg1);
                 }
                 else {
@@ -273,7 +273,7 @@ void AVLtree::searchID(TreeNode* root, string input, int arg, int arg1) {
             }
             else {
                 //descending
-                if ((string)this->raw_database->at(root->position_in_vector)[arg] > input) {
+                if (strcasecmp(input.c_str(), this->raw_database->at(root->position_in_vector)[arg]) > 0) {
                     searchID(root->left, input, arg, arg1);
                 }
                 else {
@@ -416,8 +416,7 @@ int AVLtree::find_height(TreeNode* root) {
 
     int h = 0;
     if (root != NULL) {
-        h = 1 + max(root->left == 0 ? 0 : (root->left->height),
-            root->right == 0 ? 0 : root->right->height ) ;
+        h = 1 + max(root->left == 0 ? 0 : (root->left->height), root->right == 0 ? 0 : root->right->height ) ;
         root->height = h;
     }
     return h;
