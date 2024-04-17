@@ -14,6 +14,7 @@ private:
 	int max_width = 0;
 public:
 	int prev_width = 1380;
+	Fl_Scrollbar* scroll;
 	output_table(int x, int y, int w, int h, const char* l = 0) : Fl_Table(x, y, w, h, l) {
 		vector<const char*> temp = { "Title","Album","Artists","Duration","Year" };
 		datastore.push_back(temp);
@@ -34,9 +35,11 @@ public:
 		update_list();
 		redraw();
 		max_width = w;
+		scroll = vscrollbar;
 	}
 	
 	void add_item(vector<const char*> column);
+
 
 	void resetArray() {
 		datastore.clear();
@@ -189,20 +192,31 @@ void button_pressed(Fl_Choice* tree_type, Fl_Choice* operation_choice, Fl_Choice
 				else if (op_choice == 2) {
 					insertion_arg = arg;
 				}
+				//Create the new Tree
 				AVLtree* avl = new AVLtree;
+				//Set the data pointer
 				avl->raw_database = input_data;
+
+				//Start Timer
 				auto start = std::chrono::high_resolution_clock::now();
+
+				//insert root value
 				avl->root = avl->insert(nullptr, 0, insertion_arg - 1, arg1);
 
-				//this part will need to be changed to become the new object made by the data structures.
-				//cout << sorting_option->value() - 1 << "\n";
+				//insert all of the datavalues into the tree based on the given choices.
 				result_table->hide();
 				for (int x = 1; x < input_data->size(); x++) {
 					avl->insert(avl->root, x, insertion_arg - 1, arg1);
 				}
+
+				//get time output for how long it took to insert everything.
 				auto finish = std::chrono::high_resolution_clock::now();
 				auto microseconds = std::chrono::duration_cast<std::chrono::microseconds>(finish - start);
+
+				//start second timer
 				auto start1 = std::chrono::high_resolution_clock::now();
+
+				//if just sorting then do traversal, if searching do search 
 				if (op_choice == 2) {
 					//just output the sorted data
 					avl->inorder(avl->root);
@@ -217,18 +231,23 @@ void button_pressed(Fl_Choice* tree_type, Fl_Choice* operation_choice, Fl_Choice
 
 					avl->search(avl->root, input, sorting_option->value() - 1, 0);
 				}
-				result_table->resetArray();
+				//Stop timer.
 				auto finish1 = std::chrono::high_resolution_clock::now();
 				auto microseconds1 = std::chrono::duration_cast<std::chrono::microseconds>(finish1 - start1);
+
+				//clear the current values in the table
+				result_table->resetArray();
+				//add new items into the table
 				for (int x = 0; x < avl->output_for_search.size(); x++) {
 					result_table->add_item(input_data->at(avl->output_for_search[x]));
 				}
-				status = 1;
-				//vector<string> out = { "Title", "Album", "Artist", "Duration", "Release Year" };
-				//std::cout << " sorted by: " << out[2] << ": " << (float)microseconds.count() / 1000000 << "s\n";
+
 				cout << "Num items parsed: " << avl->num_items << "\n";
 				cout << "Height of tree: " << avl->root->height << "\n";
-				avl->output_for_search.clear();
+				//delete the output array from the tree
+				vector<int>().swap(avl->output_for_search);
+				//avl->output_for_search.clear();
+				//delete each root from the tree.
 				avl->deleteAll(avl->root);
 				delete avl;
 				result_table->show();
@@ -239,6 +258,7 @@ void button_pressed(Fl_Choice* tree_type, Fl_Choice* operation_choice, Fl_Choice
 				cout << "search_time: " << search_time << "s\n";
 			}
 			else { //this is for testing purposes
+				//Times all operations to get average timing for testing. Also can be used to see memory efficiency.
 				float avg_time = 0;
 				//tests all combinations of actions that can be done. 
 				for (int i = 0; i < 3; i++) {
@@ -278,7 +298,7 @@ void button_pressed(Fl_Choice* tree_type, Fl_Choice* operation_choice, Fl_Choice
 								cout << ascent[a] << "\n";
 								cout << "Number of items parsed: " << avl->num_items << "\n";
 								cout << "Height of tree: " << avl->root->height << "\n";
-								avl->output_for_search.clear();
+								vector<int>().swap(avl->output_for_search);
 								avl->deleteAll(avl->root);
 								delete avl;
 								result_table->show();
@@ -339,9 +359,11 @@ void button_pressed(Fl_Choice* tree_type, Fl_Choice* operation_choice, Fl_Choice
 			int year = (songs.year);
 			songout.push_back( to_string(year).c_str());
 			result_table->add_item(songout);
-			songout.clear();
+			vector<const char*>().swap(songout);
+			//songout.clear();
 		}
-		searchResult.clear();
+		vector<Song>().swap(searchResult);
+		//searchResult.clear();
 		result_table->show();
 		result_table->update_list();
 		
@@ -389,8 +411,14 @@ public:
 	}
 };
 
+int scrollpos;
+void scrolled(output_table* result_table){
 
-
+	if(abs(result_table->scroll->value() -  scrollpos) > 75){
+		
+	}
+	result_table->update_list();
+}
 
 
 
@@ -434,7 +462,7 @@ int main(int argc, char** argv) {
 	my_input* search_option =     new my_input( tree_type->w() + window->w() / border_offset + operation_choice->w() + sorting_option->w(), window->h() / 6, window->w() / x_size_factor, window->h() / 11, "");
 	Fl_Choice* sort_dir =         new Fl_Choice(tree_type->w() + window->w() / border_offset + operation_choice->w() + sorting_option->w() +  search_option->w() , window->h()/6, window->w()/10, window->h()/11, "");
 	result_table = new output_table(10, 2 * window->h() / 6, window->w() - 20, window->h() - 275);
-	search_option->stopwatch->resize(button->x(), button->y() - button->h() / 2 - (button->y() - title->y()) / 2, button->w(), button->h()/2 + 5);
+	search_option->stopwatch->resize(sort_dir->x(), button->y() - button->h() / 2 - (button->y() - title->y()) / 2, button->w() + sort_dir->w(), search_option->stopwatch->textsize()*3 + 15 );
 
 	winsize = window->w();
 	
@@ -460,7 +488,8 @@ int main(int argc, char** argv) {
 
 	search_option->stopwatch->value("Time Taken: 0s");
 	search_option->stopwatch->wrap(FL_ALIGN_TOP);
-	
+	search_option->stopwatch->textsize(search_option->stopwatch->textsize()*1.5);
+
 
 	result_table->hide();
 
@@ -534,7 +563,8 @@ int main(int argc, char** argv) {
 				input_data->push_back(row);
 			}
 		}
-		row.clear();
+		vector<const char*>().swap(row);
+		//row.clear();
 	}
 	inputFile.close();
 	//for smaller datasets for ease of testing.
@@ -575,7 +605,8 @@ int main(int argc, char** argv) {
 				input_data->push_back(row);
 			}
 		}
-		row.clear();
+		vector<const char*>().swap(row);
+		//row.clear();
 	}
 	inputFile.close();
 	}
@@ -588,8 +619,8 @@ int main(int argc, char** argv) {
 	FL_FUNCTION_CALLBACK_4(operation_choice, updated_operation, Fl_Choice* , operation_choice, Fl_Choice*, sorting_option, Fl_Input*,  search_option, Fl_Choice* , sort_dir);
 	//when the choice of how to search for something is changed. might not be necessary
 	FL_FUNCTION_CALLBACK_4(sorting_option, updated_operation, Fl_Choice*, operation_choice, Fl_Choice*, sorting_option, Fl_Input*, search_option, Fl_Choice* , sort_dir);
-
-	
+	//int scrollbar_pos = 
+	FL_FUNCTION_CALLBACK_1(result_table, scrolled , output_table*, result_table);
 	
 
 

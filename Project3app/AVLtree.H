@@ -9,17 +9,14 @@ using namespace std;
 
 
 struct TreeNode {
-    vector<const char*>* song;
-    int position_in_vector;
+   
     TreeNode* left;
     TreeNode* right;
-    
-    int height;
-
     TreeNode* parent;
-    int bal;
-    
+    int height;
+    int position_in_vector;
     vector<TreeNode*> dupes;
+
     TreeNode(int pos) {
         position_in_vector = pos;
         left = nullptr;

@@ -33,7 +33,6 @@ TreeNode* AVLtree::insert(TreeNode* root, int pos, int arg, int arg1) {
     {
         // adding the new song into the list based on its decided value
         if (strcasecmp(this->raw_database->at(pos)[arg], this->raw_database->at(root->position_in_vector)[arg]) < 0){
-       //if ((string)this->raw_database->at(pos)[arg] < (string)this->raw_database->at(root->position_in_vector)[arg]) {
             // changing the base root of the tree when necessary
             if (root == this->root) {
                 
@@ -46,7 +45,6 @@ TreeNode* AVLtree::insert(TreeNode* root, int pos, int arg, int arg1) {
             }
         }
         else  if (strcasecmp(this->raw_database->at(pos)[arg], this->raw_database->at(root->position_in_vector)[arg]) > 0){
-       // if ((string)this->raw_database->at(pos)[arg] > (string)this->raw_database->at(root->position_in_vector)[arg]) {
             // changing the base root of the tree when necessary
             if (root == this->root) {
                 this->root->right = insert(root->right, pos, arg, arg1);
@@ -58,7 +56,6 @@ TreeNode* AVLtree::insert(TreeNode* root, int pos, int arg, int arg1) {
             }
         }
         else  if ( strcasecmp(this->raw_database->at(pos)[arg], this->raw_database->at(root->position_in_vector)[arg]) == 0){
-        //if ((string)this->raw_database->at(pos)[arg] == (string)this->raw_database->at(root->position_in_vector)[arg]) {
             root->dupes.push_back(new TreeNode(pos));
 
         }
@@ -67,7 +64,6 @@ TreeNode* AVLtree::insert(TreeNode* root, int pos, int arg, int arg1) {
     case 1:
         // adding the new song into the list based on its decided value
         if ( strcasecmp(this->raw_database->at(pos)[arg], this->raw_database->at(root->position_in_vector)[arg]) > 0){
-        //if ((string)this->raw_database->at(pos)[arg] > (string)this->raw_database->at(root->position_in_vector)[arg]) {
             // changing the base root of the tree when necessary
             if (root == this->root) {
 
@@ -81,7 +77,6 @@ TreeNode* AVLtree::insert(TreeNode* root, int pos, int arg, int arg1) {
             }
         }
         else  if ( strcasecmp(this->raw_database->at(pos)[arg], this->raw_database->at(root->position_in_vector)[arg]) < 0){
-        //if ((string)this->raw_database->at(pos)[arg] < (string)this->raw_database->at(root->position_in_vector)[arg]) {
             // changing the base root of the tree when necessary
             if (root == this->root) {
                 this->root->right = insert(root->right, pos, arg, arg1);
@@ -180,22 +175,11 @@ TreeNode* AVLtree::right_balance(TreeNode* root) {
     return newParent;
 }
 
-/*
-void AVLtree::search_IDInsert(TreeNode* root, string id) {
-    if (root != NULL) {
-        search_IDInsert(root->left, id);
-        if (root->id == id) {
-            this->found = 1;
-            return;
-        }
-        search_IDInsert(root->right, id);
-    }
-    return;
-}
-*/
 void AVLtree::search(TreeNode* root, string input, int arg, int arg1) {
     // based on the input value it will search for the node with the correct type
     // either ID or name
+    //ID is used for duration and year
+    //Name is used for the rest.
     if (arg >= 3) {
         searchID(root, input, arg, arg1);
     }
@@ -215,11 +199,9 @@ void AVLtree::searchn(TreeNode* root, string name, int arg) {
     }
     searchn(root->left, name, arg);
     if ( strcasecmp(name.c_str(), this->raw_database->at(root->position_in_vector)[arg]) == 0){
-    //if (name == (string)this->raw_database->at(root->position_in_vector)[arg]) {
         this->output_for_search.push_back(root->position_in_vector);
         for (TreeNode* duplicates : root->dupes) {
             if ( strcasecmp(name.c_str(), this->raw_database->at(duplicates->position_in_vector)[arg]) == 0) {
-            //if (name == (string)this->raw_database->at(duplicates->position_in_vector)[arg]) {
                 this->output_for_search.push_back(duplicates->position_in_vector);
             }
         }
@@ -228,7 +210,6 @@ void AVLtree::searchn(TreeNode* root, string name, int arg) {
     else {
         for (TreeNode* duplicates : root->dupes) {
             if ( strcasecmp(name.c_str(), this->raw_database->at(duplicates->position_in_vector)[arg]) == 0) {
-            //if (name == (string)this->raw_database->at(duplicates->position_in_vector)[arg]) {
                 this->output_for_search.push_back(duplicates->position_in_vector);
                 this->found = 1;
             }
@@ -238,7 +219,6 @@ void AVLtree::searchn(TreeNode* root, string name, int arg) {
     if (root->position_in_vector == this->maxid) {
         for (TreeNode* duplicates : root->dupes) {
             if ( strcasecmp(name.c_str(), this->raw_database->at(duplicates->position_in_vector)[arg]) == 0) {
-            //if (name == (string)this->raw_database->at(duplicates->position_in_vector)[arg]) {
                 this->output_for_search.push_back(duplicates->position_in_vector);
                 this->found = 1;
             }
@@ -258,7 +238,6 @@ void AVLtree::searchID(TreeNode* root, string input, int arg, int arg1) {
             this->output_for_search.push_back(root->position_in_vector);
             for (TreeNode* duplicates : root->dupes) {
                 searchID(duplicates, input, arg, arg1);
-                //this->output_for_search.push_back(duplicates->position_in_vector);
             }
         }
         else {
@@ -284,7 +263,6 @@ void AVLtree::searchID(TreeNode* root, string input, int arg, int arg1) {
     }
     else {
         return;
-        // cout << "unsuccessful\n";
     }
 }
 
@@ -421,44 +399,6 @@ int AVLtree::find_height(TreeNode* root) {
     }
     return h;
 
-
-    /*
-    //trying possibly faster function of finding heights
-    queue<TreeNode*> nodesInLevel;
-    int height = 0;
-    int nodeCount = 0;
-    TreeNode* currentNode;
-    if (root == NULL) {
-        return 0;
-    }
-    nodesInLevel.push(root);
-    while (!nodesInLevel.empty()) {
-        height++;
-        nodeCount = nodesInLevel.size();
-        while (nodeCount--) {
-            currentNode = nodesInLevel.front();
-
-            // Check if the current nodes has left child and
-            // insert it in the queue.
-
-            if (currentNode->left != NULL) {
-                nodesInLevel.push(currentNode->left);
-            }
-
-            // Check if the current nodes has right child
-            // and insert it in the queue.
-            if (currentNode->right != NULL) {
-                nodesInLevel.push(currentNode->right);
-            }
-
-            // Once the children of the current node are
-            // inserted. Delete the current node.
-
-            nodesInLevel.pop();
-        }
-    }
-    return height;
-    */
 };
 
 
@@ -572,16 +512,20 @@ void AVLtree::deleteAll(TreeNode* root) {
 
     if (root->left != nullptr) {
         deleteAll(root->left);
-        if (root->left->left != nullptr)
-        delete root->left->left;
+        if (root->left->left != nullptr){
+           vector<TreeNode*>().swap(root->left->left->dupes);
+            delete root->left->left;
+
+        }
     }
     if (root->right != nullptr) {
         deleteAll(root->right);
         if (root->right->right != nullptr) {
+            vector<TreeNode*>().swap(root->right->right->dupes);
             delete root->right->right;
         }
     }
-    root->dupes.clear();
+    vector<TreeNode*>().swap(root->dupes);
     
 }
 
