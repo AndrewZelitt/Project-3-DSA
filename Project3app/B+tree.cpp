@@ -1,13 +1,22 @@
 //written by Garrett McClay
 // addding pragma once to make sure stuff doesn't break - Andrew
-#pragma once
 
+//#pragma once
+#include <regex>
 #include <iostream>
 #include <vector>
 #include <string>
+#include <cstring>
+#include <string.h>
 #include <algorithm>
 #include <iterator>
 #include <map>
+
+#ifdef _WIN32
+int strcasecmp(const char* str1, const char* str2) {
+    return strcmpi(str1, str2);
+}
+#endif
 
 using namespace std;
 int MAX_SONGS_PER_NODE = 5;
@@ -37,77 +46,89 @@ private:
     // You might need additional private methods for insertion, deletion, searching, etc.
 
 public:
+    vector<Song> output;
     BPlusTree() {
         root = nullptr;
     }
 
     // Method to insert a song into the tree
     void insert(const Song& song) {
-        cout << "begin inserting" << endl;
+       // //cout << "begin inserting" << endl;
         if (root == nullptr) {
-            cout << "root is null?" << endl;
+          //  //cout << "root is null?" << endl;
             root = new BPlusTreeNode();
             root->songs.push_back(song);
 
             root->isLeaf = true;
         }
         else {
-            cout << "good so far" << endl;
+         //   //cout << "good so far" << endl;
             insertHelper(root, song);
-            cout << "ok done" << endl;
+         //   //cout << "ok done" << endl;
         }
-        cout << "should be done now" << endl;
+       // //cout << "should be done now" << endl;
+        //printTree();
     }
 
     // Helper function for insertion
     void insertHelper(BPlusTreeNode* node, const Song& song) {
         if (node->children.empty()) {
-            cout << "made it in" << endl;
+            ////cout << "made it in" << endl;
             // Insert into leaf node
             // Find the appropriate position to maintain order
             auto it = lower_bound(node->songs.begin(), node->songs.end(), song, [](const Song& a, const Song& b) {
-                return a.title < b.title; // Example: Insert based on title
-            });
+                return a.title < b.title;
+                //return strcasecmp(a.title, b.title) < 0; // return a.title < b.title;
+                });
             node->songs.insert(it, song);
 
             for (int i = 0; i < node->songs.size(); i++) {
-                cout << node->songs[i].title << endl;
+                ////cout << node->songs[i].title << endl;
             }
 
             // Split the leaf node if necessary
             if (node->songs.size() >= MAX_SONGS_PER_NODE) {
-                cout << "goes in here" << endl;
+                ////cout << "goes in here" << endl;
                 splitLeafNode(node);
             }
         }
         else {
             // Find the child node to descend into
-            int i = 0;
-            int j;
+            int indexI = 0;
+            int indexJ = 0;
             bool end = false;
-            while (i < node->children.size()) {
-                j = 0;
-                while (j < node->children[i]->songs.size()){
-                    if (node->children[i]->songs[j].title > song.title) {
-                        cout << "end loops" << endl;
-                        cout << node->children[i]->songs[j].title << endl;
+            for (int i = 0; i < node->children.size(); i++) {
+                for (int j = 0; j < node->children[i]->songs.size(); j++) {
+                    //if (node->children[i]->songs[j].title > song.title) {
+                    ////cout << node->children[i]->songs[j].title << endl;
+                    if (strcasecmp(node->children[i]->songs[j].title.c_str(), song.title.c_str()) >= 0) {
+                        ////cout << "end loops" << endl;
+                        ////cout << node->children[i]->songs[j].title << endl;
                         end = true;
+                        indexJ = j;
                         break;
                     }
-                    j++;
+                    indexJ = j;
                 }
                 if (end == true) {
+                    indexI = i;
                     break;
                 }
-                i++;
+                indexI = i;
             }
-            if (j == 0 && node->children[i]->songs[j].title > song.title) {
-                i--;
+            if (indexJ == 0 && node->children[indexI]->songs[indexJ].title > song.title) {
+                if (indexI == 0) {
+                    indexI++;
+                }
+                ////cout << indexI << endl;
+                indexI--;
             }
+            ////cout << indexI << node->children[indexI]->songs[indexJ].title << endl;
 
-            cout << "recursion" << endl;
-            insertHelper(node->children[i], song);
-            cout << "out" << endl;
+
+            ////cout << "recursion" << endl;
+            insertHelper(node->children[indexI], song);
+            ////cout << "out" << endl;
         }
     }
 
@@ -116,31 +137,30 @@ public:
         // Create a new node for splitting
         BPlusTreeNode* newNode = new BPlusTreeNode();
         int mid = node->songs.size() / 2;
-        cout << "slit leaf node" << endl;
-
+        ////cout << "slit leaf node" << endl;
 
         // Move half of the songs to the new node
         newNode->songs.assign(node->songs.begin() + mid, node->songs.end());
         node->songs.erase(node->songs.begin() + mid, node->songs.end());
-
-        for (int i = 0; i < node->songs.size();i++) {
-            //cout << node->songs[i].title << endl;
+        /*
+        for (int i = 0; i < node->songs.size(); i++) {
+            //////cout << node->songs[i].title << endl;
         }
-
+        */
         // Update sibling pointers
         newNode->next = node->next;
         node->next = newNode;
-
+        /*
         for (int i = 0; i < node->next->songs.size();i++) {
-            //cout << node->next->songs[i].title << endl;
+            ////cout << node->next->songs[i].title << endl;
         }
-
+        */
         // Insert the middle key to the parent node
         Song middleSong = newNode->songs.front(); // Assuming keys are sorted
-        cout << middleSong.title << endl;
+        ////cout << middleSong.title << endl;
         insertIntoParent(node, middleSong, newNode);
 
-        cout << "finished splitting leaf node" << endl;
+        ////cout << "finished splitting leaf node" << endl;
     }
 
     // Function to find the parent of a given node
@@ -174,21 +194,21 @@ public:
         // Create a new node for splitting
         BPlusTreeNode* newNode = new BPlusTreeNode();
 
-        cout << "split internal node" << endl;
+        ////cout << "split internal node" << endl;
         for (int i = 0; i < node->songs.size(); i++) {
-            cout << node->songs[i].title << endl;
+            ////cout << node->songs[i].title << endl;
         }
 
         // Find the index to split the keys
         int mid = node->songs.size() / 2;
-        cout << node->songs[mid].title << endl;
+        ////cout << node->songs[mid].title << endl;
 
         // Move half of the keys to the new node
         newNode->songs.assign(node->songs.begin() + mid + 1, node->songs.end());
         node->songs.erase(node->songs.begin() + mid, node->songs.end());
-        cout << "making new node" << endl;
+        ////cout << "making new node" << endl;
         for (int i = 0; i < newNode->songs.size(); i++) {
-            cout << newNode->songs[i].title << endl;
+            ////cout << newNode->songs[i].title << endl;
         }
 
         // Move half of the children to the new node
@@ -198,49 +218,53 @@ public:
 
         // Find the parent node
         BPlusTreeNode* parent = findParent(root, node);
-        cout << "again" << endl;
+        ////cout << "again" << endl;
         if (parent == nullptr) {
             // If the current node is the root, create a new root
             parent = new BPlusTreeNode();
             root = parent;
         }
-        cout << newNode->children.size() << endl;
+        ////cout << newNode->children.size() << endl;
         parent->children.push_back(node);
         // Insert the middle key to the parent node
+        if (mid >= node->songs.size()) {
+            mid = node->songs.size() - 1;
+        }
         parent->songs.insert(parent->songs.begin() + distance(parent->children.begin(), find(parent->children.begin(), parent->children.end(), node)), node->songs[mid]);
         // Insert the new node to the parent's children
-        cout << parent->children.size() << endl;
+        ////cout << parent->children.size() << endl;
         parent->children.insert(parent->children.begin() + distance(parent->children.begin(), find(parent->children.begin(), parent->children.end(), node)) + 1, newNode);
-        cout << "added the children in" << endl;
+        ////cout << "added the children in" << endl;
         // If the parent node now has too many keys, split it recursively
         if (parent->songs.size() >= MAX_SONGS_PER_NODE) {
             splitInternalNode(parent);
         }
     }
 
-
     // Function to insert a key into the parent node
     void insertIntoParent(BPlusTreeNode* leftChild, const Song& song, BPlusTreeNode* rightChild) {
-        cout << "insertintoparent" << endl;
+        ////cout << "insertintoparent" << endl;
         if (root == leftChild) {
             // Create a new root
-            cout << "make a new root" << endl;
+            ////cout << "make a new root" << endl;
             root = new BPlusTreeNode();
             root->songs.push_back(song);
             root->children.push_back(leftChild);
             root->children.push_back(rightChild);
             root->isLeaf = false;
-        } else {
+        }
+        else {
             // Find the parent node
             BPlusTreeNode* parent = findParent(root, leftChild);
-            cout << song.title << endl;
+            ////cout << song.title << endl;
             parent->songs.push_back(song);
             //using bubble sort for now should probably make more efficient later
             bool swapped;
             for (int i = 0; i < parent->songs.size() - 1; i++) {
                 swapped = false;
                 for (int j = 0; j < parent->songs.size() - i - 1; j++) {
-                    if (parent->songs[j].title > parent->songs[j + 1].title) {
+                    //if (parent->songs[j].title > parent->songs[j + 1].title) {
+                    if (strcasecmp(parent->songs[j].title.c_str(), parent->songs[j + 1].title.c_str()) > 0) {
                         swap(parent->songs[j], parent->songs[j + 1]);
                         swapped = true;
                     }
@@ -254,8 +278,9 @@ public:
             int i = 0;
             auto iter = parent->songs.begin();
             for (; iter != parent->songs.end(); iter++) {
-                //cout << iter->title << song.title << endl;
-                if (iter->title >= song.title) {
+                //////cout << iter->title << song.title << endl;
+                //if (iter->title >= song.title) {
+                if (strcasecmp(iter->title.c_str(), song.title.c_str()) >= 0) {
                     break;
                 }
             }
@@ -263,7 +288,6 @@ public:
             // Insert the right child pointer
             int index = distance(parent->songs.begin(), iter);
             parent->children.insert(parent->children.begin() + index + 1, rightChild);
-
 
             // Split the parent node if necessary
             if (parent->songs.size() >= MAX_SONGS_PER_NODE) {
@@ -275,11 +299,11 @@ public:
     // Method to search for songs based on criteria like title, artist, etc.
     vector<Song> search(const string& key) {
         vector<Song> result;
-        cout << "search" << endl;
+        ////cout << "search" << endl;
         if (root != nullptr) {
             searchHelper(root, key, result);
         }
-        cout << "printing result" << endl;
+        ////cout << "printing result" << endl;
         return result;
     }
 
@@ -288,17 +312,24 @@ public:
 
     // Helper function for search
     void searchHelper(BPlusTreeNode* node, const string& key, vector<Song>& result) {
-        cout << "search helper" << endl;
+        ////cout << "search helper" << endl;
 
         if (node->children.empty()) {
             // Search for the key in the leaf node
             for (const auto& song : node->songs) {
-                if (song.title == key || song.artist == key || song.album == key || song.length == key || song.year == key) {
-                    cout << "found one" << endl;
+                //if (song.title == key || song.artist == key || song.album == key || song.length == key || song.year == key) {
+                if (strcasecmp(song.title.c_str(), key.c_str()) == 0 ||
+                    strcasecmp(song.artist.c_str(), key.c_str()) == 0 ||
+                    strcasecmp(song.album.c_str(), key.c_str()) == 0 ||
+                    strcasecmp(song.length.c_str(), key.c_str()) == 0 ||
+                    strcasecmp(song.year.c_str(), key.c_str()) == 0) {
+                    ////cout << "found one" << endl;
+                    cout << song.title << endl;
                     result.push_back(song);
                 }
             }
-        } else {
+        }
+        else {
             // Descend to the appropriate child node
             /*
             int i = 0;
@@ -308,8 +339,8 @@ public:
             }
 
 
-            cout << "recursion" << endl;
-            cout << i << endl;
+            ////cout << "recursion" << endl;
+            ////cout << i << endl;
             searchHelper(node->children[i], key, result);
             */
 
@@ -320,8 +351,6 @@ public:
                 searchHelper(child, key, result);
             }
         }
-
-
     }
 
     // Method to remove a song from the tree
@@ -332,12 +361,13 @@ public:
     }
 
     // Helper function for remove
-    void removeHelper(BPlusTreeNode* node,const Song& song) {
+    void removeHelper(BPlusTreeNode* node, const Song& song) {
         if (node->isLeaf) {
             // Remove the song from the leaf node
             auto iter = node->songs.begin();
             for (; iter != node->songs.end(); iter++) {
-                if (song.title == iter->title) {
+                //if (song.title == iter->title) {
+                if (strcasecmp(song.title.c_str(), iter->title.c_str()) == 0) {
                     return;
                 }
             }
@@ -347,10 +377,12 @@ public:
                 // Handle underflow if necessary
                 handleUnderflow(node);
             }
-        } else {
+        }
+        else {
             // Find the appropriate child node to descend into
             int i = 0;
-            while (i < node->songs.size() && song.title > node->songs[i].title) {
+            //while (i < node->songs.size() && song.title > node->songs[i].title) {
+            while (i < node->songs.size() && strcasecmp(song.title.c_str(), node->songs[i].title.c_str()) > 0) {
                 i++;
             }
             removeHelper(node->children[i], song);
@@ -367,14 +399,17 @@ public:
             if (leftSibling && leftSibling->songs.size() > MIN_SONGS_PER_NODE) {
                 // Borrow from left sibling
                 borrowFromLeftSibling(node, leftSibling);
-            } else if (rightSibling && rightSibling->songs.size() > MIN_SONGS_PER_NODE) {
+            }
+            else if (rightSibling && rightSibling->songs.size() > MIN_SONGS_PER_NODE) {
                 // Borrow from right sibling
                 borrowFromRightSibling(node, rightSibling);
-            } else {
+            }
+            else {
                 // Merge with a sibling
                 if (leftSibling) {
                     mergeNodes(leftSibling, node);
-                } else if (rightSibling) {
+                }
+                else if (rightSibling) {
                     mergeNodes(node, rightSibling);
                 }
             }
@@ -392,7 +427,8 @@ public:
         if (it == parent->children.begin()) {
             // No left sibling
             return nullptr;
-        } else {
+        }
+        else {
             // Return the left sibling
             return *(it - 1);
         }
@@ -409,7 +445,8 @@ public:
         if (it == parent->children.end() - 1) {
             // No right sibling
             return nullptr;
-        } else {
+        }
+        else {
             // Return the right sibling
             return *(it + 1);
         }
@@ -476,20 +513,22 @@ public:
 
     // Helper function for printing the tree
     void printHelper(BPlusTreeNode* node, int level) {
-        cout << "Level " << level << ": ";
+        ////cout << "Level " << level << ": ";
         if (node->children.empty()) {
-            cout << "Leaf Node - ";
+            ////cout << "Leaf Node - ";
             for (const auto& song : node->songs) {
-                cout << song.title << ", ";
+                output.push_back(song);
+                ////cout << song.title << ", ";
             }
         }
 
-        else if(node == root) {
-            cout << "Root Node - ";
+        else if (node == root) {
+            //cout << "Root Node - ";
             for (const auto& song : node->songs) {
-                cout << song.title << ", ";
+                //cout << song.title << ", ";
+                output.push_back(song);
             }
-            cout << endl;
+            //cout << endl;
             // Recursively print child nodes
             for (const auto& child : node->children) {
                 printHelper(child, level + 1);
@@ -497,27 +536,40 @@ public:
         }
 
         else {
-            cout << "Internal Node - ";
+            //cout << "Internal Node - ";
             for (const auto& song : node->songs) {
-                cout << song.title << ", ";
+                //cout << song.title << ", ";
+                output.push_back(song);
             }
-            cout << endl;
+            //cout << endl;
             // Recursively print child nodes
             for (const auto& child : node->children) {
                 printHelper(child, level + 1);
             }
         }
-        cout << endl;
+        //cout << endl;
     }
 
+    void printGreatestToLeast() {
+        if (root != nullptr) {
+            printGreatestToLeastHelper(root);
+        }
+    }
+
+    void printGreatestToLeastHelper(BPlusTreeNode* node) {
+        if (node->children.empty()) {
+            for (const auto& song : node->songs) {
+                //cout << song.title << ", ";
+            }
+        }
+        // Recursively print child nodes
+        for (const auto& child : node->children) {
+            printGreatestToLeastHelper(child);
+        }
+    }
 
 };
-
 /*
-* //please test using the GUI, all you should have to do is run the code and mess with the "button pressed" function. 
-* I have already started doing a little testing but you should be the one to make sure that it works correctly. 
-* Please read the discord as I documented last night that a few methods do not function.
-* The code fails after inserting only 4 items into your structure
 int main() {
     BPlusTree tree;
 
@@ -526,7 +578,7 @@ int main() {
     Song song3 = {"Apple", "Artist3", "Album3", "1354", "2010"};
     Song song0 = {"Write", "Artist0", "Album0", "2019", "2011"};
     Song song4 = {"Dongo", "Artist4", "Album4", "1258", "2010"};
-    Song song5 = {"Join", "Artist5", "Album5", "1995", "2010"};
+    Song song5 = {"Join", "Artist5", "Artist4", "1995", "2010"};
     Song song6 = {"Us", "Artist6", "Album6", "2015", "2010"};
     Song song7 = {"Human", "Artist7", "Album7", "3111510", "2010"};
 
@@ -534,7 +586,7 @@ int main() {
     Song song9 = {"Moonlight", "Artist9", "Album9", "240", "2013"};
     Song song10 = {"Stars", "Artist10", "Album0", "210", "2014"};
     Song song11 = {"Galaxy", "Artist11", "Album11", "300", "2015"};
-    Song song12 = {"Ocean", "Artist2", "Album12", "2000", "2016"};
+    Song song12 = {"Ocean", "Artist2", "Album12", "2010", "2016"};
     Song song13 = {"Mountain", "Artist13", "Album13", "320", "2017"};
     Song song14 = {"Forest", "Artist14", "Album14", "280", "2018"};
     Song song15 = {"Dongo", "Artist15", "Album15", "340", "2019"};
@@ -557,11 +609,13 @@ int main() {
     tree.insert(song15);
     //tree.printTree();
     // Example search
-    cout << "here we go" << endl;
-    vector<Song> searchResult = tree.search("2010");
+    //cout << "here we go" << endl;
+    vector<Song> searchResult = tree.search("Artist4");
     for (const auto& song : searchResult) {
-        cout << "Title: " << song.title << ", Artist: " << song.artist << ", Album: " << song.album << ", Length: " << song.length << ", Year: " << song.year << endl;
+        //cout << "Title: " << song.title << ", Artist: " << song.artist << ", Album: " << song.album << ", Length: " << song.length << ", Year: " << song.year << endl;
     }
+
+    tree.printGreatestToLeast();
 
     return 0;
 }

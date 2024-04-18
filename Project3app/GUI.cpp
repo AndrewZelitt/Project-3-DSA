@@ -346,23 +346,36 @@ void button_pressed(Fl_Choice* tree_type, Fl_Choice* operation_choice, Fl_Choice
 				auto microseconds2 = std::chrono::duration_cast<std::chrono::microseconds>(finish2 - start2);
 				cout << "B+ load time: " << (float)microseconds2.count() / 1000000 << endl;
 				auto start3 = std::chrono::high_resolution_clock::now();
-				vector<Song> searchResult = BPlus->search(search_option->value());
+				//vector<Song> searchResult = BPlus->search(search_option->value());
+				BPlus->printTree();
+				vector<Song> searchResult = BPlus->output;
 				auto finish3 = std::chrono::high_resolution_clock::now();
 				auto microseconds3 = std::chrono::duration_cast<std::chrono::microseconds>(finish3 - start3);
 				cout << "B+ search time: " << (float)microseconds3.count() / 1000000 << endl;
-				vector<const char*> songout;
+				vector<const char*>* songout = new vector<const char*>;
+				string* song_item = new string;
 				result_table->resetArray();
-				for (auto songs : searchResult) {
-					songout.push_back(songs.title.c_str());
-					songout.push_back(songs.album.c_str());
-					songout.push_back(songs.artist.c_str());
-					songout.push_back(songs.length.c_str());
-					songout.push_back(songs.year.c_str());
-					result_table->add_item(songout);
-					vector<const char*>().swap(songout);
-					//songout.clear();
+				for (Song songs : searchResult) {
+					*song_item = songs.title;
+					songout->push_back(song_item->c_str());
+					song_item = new string;
+					*song_item = songs.album;
+					songout->push_back(song_item->c_str());
+					song_item = new string;
+					*song_item = songs.artist;
+					songout->push_back(song_item->c_str());
+					song_item = new string;
+					*song_item = songs.length;
+					songout->push_back(song_item->c_str());
+					song_item = new string;
+					*song_item = songs.year;
+					songout->push_back(song_item->c_str());
+					song_item = new string;
+					result_table->add_item(*songout);
+					songout = new vector<const char*>;
+					//vector<const char*>().swap(songout);
 				}
-				vector<Song>().swap(searchResult);
+				//vector<Song>().swap(searchResult);
 				//searchResult.clear();
 				result_table->show();
 				result_table->update_list();
@@ -530,9 +543,9 @@ int main(int argc, char** argv) {
 	//ignore the first line;
 	vector<const char*> row;
 	getline(inputFile, buf, '\n');
-	//for(int i = 0; i < 100; i++){
-		//getline(inputFile, buf, '\n');
-	while (getline(inputFile, buf, '\n')) {
+	for(int i = 0; i < 100; i++){
+		getline(inputFile, buf, '\n');
+	//while (getline(inputFile, buf, '\n')) {
 		buff.str(buf);
 		while (getline(buff, *temp, ',')) {
 			if ((*temp)[0] == '[') {
@@ -570,7 +583,7 @@ int main(int argc, char** argv) {
 	}
 	inputFile.close();
 	//for smaller datasets for ease of testing.
-	if(1){
+	if(0){
 	inputFile.open("800k1artist2.csv");
 	int line = 0;
 	getline(inputFile, buf, '\n');
