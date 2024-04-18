@@ -348,6 +348,13 @@ void button_pressed(Fl_Choice* tree_type, Fl_Choice* operation_choice, Fl_Choice
 		auto start3 = std::chrono::high_resolution_clock::now();
         cout << search_option->value() << endl;
 		vector<vector<string>> searchResult = BPlus->search(search_option->value());
+        for (int i = 0; i < searchResult.size(); i++) {
+            cout << searchResult[i][0] << endl;
+            cout << searchResult[i][1] << endl;
+            cout << searchResult[i][2] << endl;
+            cout << searchResult[i][3] << endl;
+            cout << searchResult[i][4] << endl;
+        }
 		auto finish3 = std::chrono::high_resolution_clock::now();
 		auto microseconds3 = std::chrono::duration_cast<std::chrono::microseconds>(finish3 - start3);
 		cout << "B+ search time: " << (float)microseconds3.count() / 1000000 << endl;
