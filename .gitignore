@@ -1,4 +1,4 @@
 out/
-CMakePresets.json
+CppProperties.json
 .vs
 .vscode
