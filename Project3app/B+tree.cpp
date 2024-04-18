@@ -498,6 +498,16 @@ public:
         }
     }
 
+    void removeAll(BPlusTreeNode* node) {
+        if (node->children.empty()) {
+            node = nullptr;
+        }
+        // Recursively print child nodes
+        for (const auto& child : node->children) {
+            removeAll(child);
+        }
+    }
+
 };
 /*
 int main() {

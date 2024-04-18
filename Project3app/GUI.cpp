@@ -176,6 +176,7 @@ void button_pressed(Fl_Choice* tree_type, Fl_Choice* operation_choice, Fl_Choice
 	//and do the operations that are necessary;
 		int op_choice = operation_choice->value();
 		int arg = sorting_option->value();
+        cout << arg << endl;
 		int arg1 = sort_dir->value();
 		int insertion_arg = 4;
 		if (arg == 0) {
@@ -349,18 +350,29 @@ void button_pressed(Fl_Choice* tree_type, Fl_Choice* operation_choice, Fl_Choice
 		auto microseconds3 = std::chrono::duration_cast<std::chrono::microseconds>(finish3 - start3);
 		cout << "B+ search time: " << (float)microseconds3.count() / 1000000 << endl;
 		vector<const char*> songout;
+        string* song_item;
 		result_table->resetArray();
-		for (auto songs : searchResult) {
-			songout.push_back(songs[0].c_str());
-			songout.push_back(songs[1].c_str());
-			songout.push_back(songs[2].c_str());
-            songout.push_back(songs[3].c_str());
-            songout.push_back(songs[4].c_str());
-			result_table->add_item(songout);
-			vector<const char*>().swap(songout);
-			//songout.clear();
-		}
-		vector<vector<string>>().swap(searchResult);
+            for (auto songs : searchResult) {
+                *song_item = songs[0];
+                songout.push_back(song_item->c_str());
+                song_item = new string;
+                *song_item = songs[1];
+                songout.push_back(song_item->c_str());
+                song_item = new string;
+                *song_item = songs[2];
+                songout.push_back(song_item->c_str());
+                song_item = new string;
+                *song_item = songs[3];
+                songout.push_back(song_item->c_str());
+                song_item = new string;
+                *song_item = songs[4];
+                songout.push_back(song_item->c_str());
+                song_item = new string;
+                result_table->add_item(songout);
+                songout = new vector<const char*>;
+                //vector<const char>().swap(songout);
+            }
+            vector<vector<string>>().swap(searchResult);
 		//searchResult.clear();
 		result_table->show();
 		result_table->update_list();
