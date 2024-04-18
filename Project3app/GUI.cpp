@@ -548,7 +548,7 @@ int main(int argc, char** argv) {
 	//ignore the first line;
 	vector<const char*> row;
 	getline(inputFile, buf, '\n');
-	for(int i = 0; i < 4; i++){
+	for(int i = 0; i < 100; i++){
 		getline(inputFile, buf, '\n');
 	//while (getline(inputFile, buf, '\n')) {
 		buff.str(buf);
