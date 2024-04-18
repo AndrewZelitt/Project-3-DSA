@@ -478,15 +478,15 @@ public:
         cout << endl;
     }
 
-    vector<vector<string>> printGreatestToLeast() {
+    vector<vector<string>> findGreatestToLeast() {
         vector<vector<string>> result;
         if (root != nullptr) {
-            printGreatestToLeastHelper(root, result);
+            findGreatestToLeastHelper(root, result);
         }
         return result;
     }
 
-    void printGreatestToLeastHelper(BPlusTreeNode* node, vector<vector<string>> result) {
+    vector<vector<string>> findGreatestToLeastHelper(BPlusTreeNode* node, vector<vector<string>> result) {
         if (node->children.empty()) {
             for (const auto& song : node->songs) {
                 result.push_back(song);
@@ -494,7 +494,7 @@ public:
         }
         // Recursively print child nodes
         for (const auto& child : node->children) {
-            printGreatestToLeastHelper(child, result);
+            findGreatestToLeastHelper(child, result);
         }
     }
 
@@ -512,7 +512,7 @@ public:
 /*
 int main() {
     BPlusTree tree;
-
+/*
     vector<string> song1 = {"Bomb", "Artist1", "Album1", "2000", "1992"};
     vector<string> song2 = {"Song", "Artist2", "Album2", "2005", "1995"};
     vector<string> song3 = {"Apple", "Artist3", "Album3", "1354", "2010"};
@@ -548,14 +548,35 @@ int main() {
     tree.insert(song14, 0);
     tree.insert(song15, 0);
     //tree.printTree();
-    // Example search
-    cout << "here we go" << endl;
-    vector<vector<string>> searchResult = tree.search("Artist4");
-    for (const auto& song : searchResult) {
-        cout << "Title: " << song[0] << ", Artist: " << song[1] << ", Album: " << song[2] << ", Length: " << song[3] << ", Year: " << song[4] << endl;
-    }
 
-    tree.printGreatestToLeast();
+
+    vector<vector<string>> songs = {
+            {"Testify", "The Battle Of Los Angeles", "Rage Against The Machine", "210133", "1999"},
+            {"Guerrilla Radio", "The Battle Of Los Angeles", "Rage Against The Machine", "206200", "1999"},
+            {"Calm Like a Bomb", "The Battle Of Los Angeles", "Rage Against The Machine", "298893", "1999"},
+            {"Mic Check", "The Battle Of Los Angeles", "Rage Against The Machine", "213640", "1999"},
+            {"Sleep Now In the Fire", "The Battle Of Los Angeles", "Rage Against The Machine", "205600", "1999"},
+            {"Born of a Broken Man", "The Battle Of Los Angeles", "Rage Against The Machine", "280960", "1999"},
+            {"Born As Ghosts", "The Battle Of Los Angeles", "Rage Against The Machine", "202040", "1999"},
+            {"Maria", "The Battle Of Los Angeles", "Rage Against The Machine", "228093", "1999"},
+            {"Voice of the Voiceless", "The Battle Of Los Angeles", "Rage Against The Machine", "151573", "1999"},
+            {"New Millennium Homes", "The Battle Of Los Angeles", "Rage Against The Machine", "224933", "1999"},
+            {"Ashes In the Fall", "The Battle Of Los Angeles", "Rage Against The Machine", "277267", "1999"},
+            {"War Within a Breath", "The Battle Of Los Angeles", "Rage Against The Machine", "216427", "1999"},
+    };
+
+    for (auto song : songs) {
+        cout << song[0] << endl;
+        tree.insert(song, 0);
+    }
+    cout << "doesnt make it" << endl;
+    vector<vector<string>> result;
+    result = tree.findGreatestToLeast();
+    cout << result.size() << endl;
+    for (int i = 0; i < result.size(); i++) {
+        cout << i << endl;
+        cout << result[i][0] << endl;
+    }
 
     return 0;
 }

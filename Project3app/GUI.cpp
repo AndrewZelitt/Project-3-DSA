@@ -176,7 +176,7 @@ void button_pressed(Fl_Choice* tree_type, Fl_Choice* operation_choice, Fl_Choice
 	//and do the operations that are necessary;
 		int op_choice = operation_choice->value();
 		int arg = sorting_option->value();
-        cout << arg << endl;
+        //cout << arg << endl;
 		int arg1 = sort_dir->value();
 		int insertion_arg = 4;
 		if (arg == 0) {
@@ -341,10 +341,12 @@ void button_pressed(Fl_Choice* tree_type, Fl_Choice* operation_choice, Fl_Choice
 			BPlus->insert(*song, 0);
 			song = new vector<string>;
 		}
+
 		auto finish2 = std::chrono::high_resolution_clock::now();
 		auto microseconds2 = std::chrono::duration_cast<std::chrono::microseconds>(finish2 - start2);
 		cout << "B+ load time: " << (float) microseconds2.count() / 1000000 << endl;
 		auto start3 = std::chrono::high_resolution_clock::now();
+        cout << search_option->value() << endl;
 		vector<vector<string>> searchResult = BPlus->search(search_option->value());
 		auto finish3 = std::chrono::high_resolution_clock::now();
 		auto microseconds3 = std::chrono::duration_cast<std::chrono::microseconds>(finish3 - start3);

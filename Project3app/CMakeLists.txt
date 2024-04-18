@@ -5,7 +5,8 @@
 # Add source to this project's executable.
 add_executable (GUI "GUI.cpp" "GUI.h"  "AVLtree.H" )
 
-#add_library(CSV ${CMAKE_CURRENT_SOURCE_DIR} "800k1artist.csv" "800k1artist2.csv")
+#add_library(FLTK ${CMAKE_CURRENT_SOURCE_DIR}/fltk)
+
 
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/800k1artist.csv 
 	${CMAKE_CURRENT_BINARY_DIR} COPYONLY)
