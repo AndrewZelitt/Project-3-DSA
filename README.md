@@ -8,5 +8,10 @@ The link to the repository can be found at [FLTK Library](https://github.com/flt
 To install the Library, download the zip file from the repository, extract it and copy the files from inside it into the fltk folder in our project.
 3. Based on the IDE, the setup to actually run the project will be different.
   ### Visual Studio Code
-   
+   1. After cloning the repository, go to the CMake setup tab
+   2. Click on the build button and select one of the options at the top of the screen for the compiler
+   3. Click build to build the project
+   4. Click on the run button when finished and the program should open
+  ### Visual Studio
+   1. 
      
