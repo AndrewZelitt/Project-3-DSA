@@ -32,6 +32,7 @@ TreeNode* AVLtree::insert(TreeNode* root, int pos, int arg, int arg1) {
     case 0:
     {
         // adding the new song into the list based on its decided value
+        if(arg < 3){
         if (strcasecmp(this->raw_database->at(pos)[arg], this->raw_database->at(root->position_in_vector)[arg]) < 0){
             // changing the base root of the tree when necessary
             if (root == this->root) {
@@ -59,10 +60,40 @@ TreeNode* AVLtree::insert(TreeNode* root, int pos, int arg, int arg1) {
             root->dupes.push_back(new TreeNode(pos));
 
         }
+        }else{
+        if (stoi((this->raw_database->at(pos)[arg])) < stoi(this->raw_database->at(root->position_in_vector)[arg])){
+            // changing the base root of the tree when necessary
+            if (root == this->root) {
+                
+                this->root->left = insert(root->left, pos, arg, arg1);
+                root->left->parent = root;
+            }
+            else {
+                root->left = insert(root->left, pos, arg, arg1);
+                root->left->parent = root;
+            }
+        }
+        else  if (stoi((this->raw_database->at(pos)[arg])) > stoi(this->raw_database->at(root->position_in_vector)[arg])){
+            // changing the base root of the tree when necessary
+            if (root == this->root) {
+                this->root->right = insert(root->right, pos, arg, arg1);
+                root->right->parent = root;
+            }
+            else {
+                root->right = insert(root->right, pos, arg, arg1);
+                root->right->parent = root;
+            }
+        }
+        else  if (stoi((this->raw_database->at(pos)[arg])) == stoi(this->raw_database->at(root->position_in_vector)[arg])){
+            root->dupes.push_back(new TreeNode(pos));
+
+        }
+        }
         break;
     }
     case 1:
         // adding the new song into the list based on its decided value
+        if(arg < 3){
         if ( strcasecmp(this->raw_database->at(pos)[arg], this->raw_database->at(root->position_in_vector)[arg]) > 0){
             // changing the base root of the tree when necessary
             if (root == this->root) {
@@ -90,6 +121,35 @@ TreeNode* AVLtree::insert(TreeNode* root, int pos, int arg, int arg1) {
         }else  if ( strcasecmp(this->raw_database->at(pos)[arg], this->raw_database->at(root->position_in_vector)[arg]) == 0){
         //if ((string)this->raw_database->at(pos)[arg] == (string)this->raw_database->at(root->position_in_vector)[arg]) {
             root->dupes.push_back(new TreeNode(pos));
+        }
+        }else{
+              if (stoi((this->raw_database->at(pos)[arg])) > stoi(this->raw_database->at(root->position_in_vector)[arg])){
+            // changing the base root of the tree when necessary
+            if (root == this->root) {
+                
+                this->root->left = insert(root->left, pos, arg, arg1);
+                root->left->parent = root;
+            }
+            else {
+                root->left = insert(root->left, pos, arg, arg1);
+                root->left->parent = root;
+            }
+        }
+        else  if (stoi((this->raw_database->at(pos)[arg])) < stoi(this->raw_database->at(root->position_in_vector)[arg])){
+            // changing the base root of the tree when necessary
+            if (root == this->root) {
+                this->root->right = insert(root->right, pos, arg, arg1);
+                root->right->parent = root;
+            }
+            else {
+                root->right = insert(root->right, pos, arg, arg1);
+                root->right->parent = root;
+            }
+        }
+        else  if (stoi((this->raw_database->at(pos)[arg])) == stoi(this->raw_database->at(root->position_in_vector)[arg])){
+            root->dupes.push_back(new TreeNode(pos));
+
+        }
         }
         break;
     }
@@ -234,16 +294,17 @@ void AVLtree::searchn(TreeNode* root, string name, int arg) {
 void AVLtree::searchID(TreeNode* root, string input, int arg, int arg1) {
 
     if (root != NULL) {
-        if (strcasecmp(input.c_str(), this->raw_database->at(root->position_in_vector)[arg]) == 0) {
+        if (stoi(input) ==  stoi(this->raw_database->at(root->position_in_vector)[arg])) {
             this->output_for_search.push_back(root->position_in_vector);
             for (TreeNode* duplicates : root->dupes) {
                 searchID(duplicates, input, arg, arg1);
             }
+            return;
         }
         else {
             if (arg1) {
                 //ascending
-                if (strcasecmp(input.c_str(), this->raw_database->at(root->position_in_vector)[arg]) < 0) {
+                if (stoi(input) >  stoi(this->raw_database->at(root->position_in_vector)[arg])) {
                     searchID(root->left, input, arg, arg1);
                 }
                 else {
@@ -252,7 +313,7 @@ void AVLtree::searchID(TreeNode* root, string input, int arg, int arg1) {
             }
             else {
                 //descending
-                if (strcasecmp(input.c_str(), this->raw_database->at(root->position_in_vector)[arg]) > 0) {
+                if (stoi(input) <  stoi(this->raw_database->at(root->position_in_vector)[arg])) {
                     searchID(root->left, input, arg, arg1);
                 }
                 else {
@@ -315,7 +376,7 @@ TreeNode* AVLtree::left_right_balance(TreeNode* root) {
     return newParent;
 }
 
-// using the boolean value to remove the final comma
+// using the boolean value to remove the final comma (not used for this project but kept for ease of development)
 // was made by user Andrew Semashev on stack overflow
 // https://stackoverflow.com/a/68040568
 void AVLtree::inorder(TreeNode* root) {

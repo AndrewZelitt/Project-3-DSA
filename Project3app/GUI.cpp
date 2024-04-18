@@ -7,7 +7,7 @@ using namespace std;
 
 int winsize = 1380;
 
-//Some of this code has been adapted from the various example Code given by FLTK
+
 class output_table : public Fl_Table {
 private:
 	vector<vector<const char*>> datastore;
@@ -92,7 +92,7 @@ public:
 		fl_color(r, g, b);
 		fl_color(fl_color_average(FL_WHITE,fl_color(), 0.20)); fl_rectf(X, Y, W, H);
 		// Draw cell data
-		fl_color(FL_GRAY0); fl_draw(s, X, Y, W, H, FL_ALIGN_WRAP);
+		fl_color(FL_WHITE); fl_draw(s, X, Y, W, H, FL_ALIGN_WRAP);
 		// Draw box border
 		fl_color(color()); fl_rect(X, Y, W, H);
 		fl_pop_clip();
@@ -103,7 +103,7 @@ public:
 			static char s[40];
 			switch (context) {
 			case CONTEXT_STARTPAGE:                   // before page is drawn..
-				fl_font(FL_HELVETICA, 16);              // set the font for our drawing operations
+				fl_font(FL_ZAPF_DINGBATS, 16);              // set the font for our drawing operations
 				return;
 			case CONTEXT_COL_HEADER:                  // Draw column headers
 				//sprintf(s, "%c", 'A' + COL);
@@ -116,10 +116,10 @@ public:
 				return;
 			case CONTEXT_CELL:                        // Draw data in cells
 				if (COL < 3) {
-					fl_font(FL_HELVETICA, 16);
+					fl_font(FL_ZAPF_DINGBATS, 16);
 				}
 				else {
-					fl_font(FL_HELVETICA, 16);
+					fl_font(FL_ZAPF_DINGBATS, 16);
 				}
 				DrawData(datastore[ROW][COL], X, Y, W, H);
 				return;
@@ -129,8 +129,12 @@ public:
 	}
 	void DrawHeader(const char* s, int X, int Y, int W, int H) {
 		fl_push_clip(X, Y, W, H);
-		fl_draw_box(FL_THIN_UP_BOX, X, Y, W, H, row_header_color());
-		fl_color(FL_BLACK);
+		char r = 15;
+		char g = 52;
+		char b = 128;
+		fl_color(r, g, b);
+		fl_draw_box(FL_THIN_UP_BOX, X, Y, W, H, fl_color());
+		fl_color(fl_color_average(FL_WHITE,fl_color(), 0.8));
 		fl_draw(s, X, Y, W, H, FL_ALIGN_CENTER);
 		fl_pop_clip();
 	}
@@ -150,8 +154,6 @@ public:
 		string send_to_stopwatch = "";
 		string load = to_string(load_time);
 		string search = to_string(search_time);
-		//sprintf(load, "%04f:", load_time);
-		//sprintf(search, "%04f:", search_time);
 		if (choice == 2) {
 			
 
@@ -422,34 +424,6 @@ void scrolled(output_table* result_table){
 }
 
 
-
-
-
-/*
-//adapted from the example code for autowidth for a table from fltk.
-void output_table::autowidth(int pad) {
-	int w, h;
-	static const char *G_header[] = { "Name", "Album","Artists","Duration","Year" };
-	// Initialize all column widths to header width
-	fl_font(FL_HELVETICA, 12);
-	for (int c = 0; G_header[c]; c++) {
-		w = 0; fl_measure(G_header[c], w, h, 0);                   // pixel width of header text
-		col_width(c, w + pad);
-	}
-	fl_font(FL_HELVETICA, 12);
-	for (int r = 0; r < (int)datastore.size(); r++) {
-		for (int c = 0; c < (int)datastore[r].size(); c++) {
-			w = 0; fl_measure(datastore[r][c], w, h, 0);       // pixel width of row text
-			if ((w + pad) > col_width(c)) col_width(c, w + pad);
-		}
-	}
-	table_resized();
-	redraw();
-}
-*/
-
-
-
 int main(int argc, char** argv) {
 	
 	my_window* window = new my_window(1380, 768);
@@ -469,8 +443,9 @@ int main(int argc, char** argv) {
 	
 	//formatting
 	title->box(FL_UP_BOX);
-	title->labelfont(FL_HELVETICA );
+	title->labelfont(FL_ZAPF_DINGBATS);
 	title->labelsize(36);
+	title->labelcolor(FL_WHITE);
 
 	button->labelsize(30);
 
@@ -493,6 +468,7 @@ int main(int argc, char** argv) {
 
 
 	result_table->hide();
+	
 
 	sort_dir->add("Ascending | Descending");
 	sort_dir->value(0);
@@ -505,11 +481,13 @@ int main(int argc, char** argv) {
 	window->color(fl_rgb_color(r, g, b));
 	title->color(fl_rgb_color(r, g, b));
 	title->box(FL_NO_BOX);
-	
+	result_table->color(fl_rgb_color(r, g, b));
 	
 	button->box(FL_UP_BOX);
-	tree_type->box(FL_NO_BOX);
+	tree_type->box(FL_SHADOW_BOX);
 	operation_choice->box(FL_SHADOW_BOX);
+	search_option->box(FL_SHADOW_BOX);
+	sorting_option->box(FL_SHADOW_BOX);
 	search_option->stopwatch->box(FL_FLAT_BOX);
 	sort_dir->box(FL_SHADOW_BOX);
 	
@@ -530,9 +508,9 @@ int main(int argc, char** argv) {
 	//ignore the first line;
 	vector<const char*> row;
 	getline(inputFile, buf, '\n');
-	//for(int i = 0; i < 100; i++){
-		//getline(inputFile, buf, '\n');
-	while (getline(inputFile, buf, '\n')) {
+	for(int i = 0; i < 100; i++){
+		getline(inputFile, buf, '\n');
+	//while (getline(inputFile, buf, '\n')) {
 		buff.str(buf);
 		while (getline(buff, *temp, ',')) {
 			if ((*temp)[0] == '[') {
@@ -570,7 +548,7 @@ int main(int argc, char** argv) {
 	}
 	inputFile.close();
 	//for smaller datasets for ease of testing.
-	if(1){
+	if(0){
 	inputFile.open("800k1artist2.csv");
 	int line = 0;
 	getline(inputFile, buf, '\n');
