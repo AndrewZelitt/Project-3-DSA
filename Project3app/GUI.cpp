@@ -349,26 +349,26 @@ void button_pressed(Fl_Choice* tree_type, Fl_Choice* operation_choice, Fl_Choice
 		auto finish3 = std::chrono::high_resolution_clock::now();
 		auto microseconds3 = std::chrono::duration_cast<std::chrono::microseconds>(finish3 - start3);
 		cout << "B+ search time: " << (float)microseconds3.count() / 1000000 << endl;
-		vector<const char*> songout;
+		vector<const char*> * songout = new vector<const char*>;
         string* song_item;
 		result_table->resetArray();
             for (auto songs : searchResult) {
                 *song_item = songs[0];
-                songout.push_back(song_item->c_str());
+                songout->push_back(song_item->c_str());
                 song_item = new string;
                 *song_item = songs[1];
-                songout.push_back(song_item->c_str());
+                songout->push_back(song_item->c_str());
                 song_item = new string;
                 *song_item = songs[2];
-                songout.push_back(song_item->c_str());
+                songout->push_back(song_item->c_str());
                 song_item = new string;
                 *song_item = songs[3];
-                songout.push_back(song_item->c_str());
+                songout->push_back(song_item->c_str());
                 song_item = new string;
                 *song_item = songs[4];
-                songout.push_back(song_item->c_str());
+                songout->push_back(song_item->c_str());
                 song_item = new string;
-                result_table->add_item(songout);
+                result_table->add_item(*songout);
                 songout = new vector<const char*>;
                 //vector<const char>().swap(songout);
             }

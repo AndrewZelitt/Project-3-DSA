@@ -11,9 +11,11 @@
 #include "AVLtree.H"
 
 #ifdef _WIN32
+#ifndef strcasecmp
 int strcasecmp(const char* str1, const char* str2) {
     return strcmpi(str1, str2);
 }
+#endif
 #endif
 
 
