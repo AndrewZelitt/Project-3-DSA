@@ -103,7 +103,7 @@ public:
 			static char s[40];
 			switch (context) {
 			case CONTEXT_STARTPAGE:                   // before page is drawn..
-				fl_font(FL_ZAPF_DINGBATS, 16);              // set the font for our drawing operations
+				fl_font(FL_HELVETICA, 16);              // set the font for our drawing operations
 				return;
 			case CONTEXT_COL_HEADER:                  // Draw column headers
 				//sprintf(s, "%c", 'A' + COL);
@@ -116,10 +116,10 @@ public:
 				return;
 			case CONTEXT_CELL:                        // Draw data in cells
 				if (COL < 3) {
-					fl_font(FL_ZAPF_DINGBATS, 16);
+					fl_font(FL_HELVETICA, 16);
 				}
 				else {
-					fl_font(FL_ZAPF_DINGBATS, 16);
+					fl_font(FL_HELVETICA, 16);
 				}
 				DrawData(datastore[ROW][COL], X, Y, W, H);
 				return;
@@ -443,7 +443,7 @@ int main(int argc, char** argv) {
 	
 	//formatting
 	title->box(FL_UP_BOX);
-	title->labelfont(FL_ZAPF_DINGBATS);
+	title->labelfont(FL_HELVETICA);
 	title->labelsize(36);
 	title->labelcolor(FL_WHITE);
 
