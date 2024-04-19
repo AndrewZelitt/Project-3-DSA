@@ -332,42 +332,59 @@ void button_pressed(Fl_Choice* tree_type, Fl_Choice* operation_choice, Fl_Choice
 			}
 			else if (tree_type->value() == 2) {
 				//put the b+ Tree testing code here
-				BPlusTree* BPlus = new BPlusTree;
-				Song* song = new Song;
-				auto start2 = std::chrono::high_resolution_clock::now();
-				for (int i = 0; i < input_data->size(); i++) {
-					song->title =  input_data->at(i)[0];
-					song->album =  input_data->at(i)[1];
-					song->artist = input_data->at(i)[2];
-					song->length = input_data->at(i)[3];
-					song->year =   input_data->at(i)[4];
-					BPlus->insert(*song);
-					song = new Song;
-				}
-				auto finish2 = std::chrono::high_resolution_clock::now();
-				auto microseconds2 = std::chrono::duration_cast<std::chrono::microseconds>(finish2 - start2);
-				cout << "B+ load time: " << (float)microseconds2.count() / 1000000 << endl;
-				auto start3 = std::chrono::high_resolution_clock::now();
-				vector<Song> searchResult = BPlus->search(search_option->value());
-				auto finish3 = std::chrono::high_resolution_clock::now();
-				auto microseconds3 = std::chrono::duration_cast<std::chrono::microseconds>(finish3 - start3);
-				cout << "B+ search time: " << (float)microseconds3.count() / 1000000 << endl;
-				vector<const char*> songout;
-				result_table->resetArray();
-				for (auto songs : searchResult) {
-					songout.push_back(songs.title.c_str());
-					songout.push_back(songs.album.c_str());
-					songout.push_back(songs.artist.c_str());
-					songout.push_back(songs.length.c_str());
-					songout.push_back(songs.year.c_str());
-					result_table->add_item(songout);
-					vector<const char*>().swap(songout);
-					//songout.clear();
-				}
-				vector<Song>().swap(searchResult);
-				//searchResult.clear();
-				result_table->show();
-				result_table->update_list();
+				   //put the b+ Tree testing code here
+		    BPlusTree* BPlus = new BPlusTree;
+		    vector<string>* song = new vector<string>;
+		    auto start2 = std::chrono::high_resolution_clock::now();
+		    for (int i = 0; i < input_data->size(); i++) {
+                song->emplace_back(input_data->at(i)[0]);
+                song->emplace_back(input_data->at(i)[1]);
+                song->emplace_back(input_data->at(i)[2]);
+                song->emplace_back(input_data->at(i)[3]);
+                song->emplace_back(input_data->at(i)[4]);
+                BPlus->insert(*song, arg-1);
+		    }
+		    auto finish2 = std::chrono::high_resolution_clock::now();
+		    auto microseconds2 = std::chrono::duration_cast<std::chrono::microseconds>(finish2 - start2);
+		    cout << "B+ load time: " << (float) microseconds2.count() / 1000000 << endl;
+		    auto start3 = std::chrono::high_resolution_clock::now();
+            //attribute is 0 for title 1 fdr album 2 for artist 3 for length 4 for year
+		    vector<vector<string>> searchResult;
+			if(op_choice == 1){
+				searchResult = BPlus->search(search_option->value(), arg - 1);
+			}else{
+				searchResult = BPlus->leastToGreatest();
+			}
+            auto finish3 = std::chrono::high_resolution_clock::now();
+		    auto microseconds3 = std::chrono::duration_cast<std::chrono::microseconds>(finish3 - start3);
+		    cout << "B+ search time: " << (float)microseconds3.count() / 1000000 << endl;
+            vector<const char*> * songout = new vector<const char*>;
+            string* song_item = new string;
+            result_table->resetArray();
+            for (auto songs : searchResult) {
+                *song_item = songs[0];
+                songout->push_back(song_item->c_str());
+                song_item = new string;
+                *song_item = songs[1];
+                songout->push_back(song_item->c_str());
+                song_item = new string;
+                *song_item = songs[2];
+                songout->push_back(song_item->c_str());
+                song_item = new string;
+                *song_item = songs[3];
+                songout->push_back(song_item->c_str());
+                song_item = new string;
+                *song_item = songs[4];
+                songout->push_back(song_item->c_str());
+                song_item = new string;
+                result_table->add_item(*songout);
+                songout = new vector<const char*>;
+                //vector<const char>().swap(songout);
+            }
+            vector<vector<string>>().swap(searchResult);
+		    //searchResult.clear();
+		    result_table->show();
+		    result_table->update_list();
 
 			}
 		}
