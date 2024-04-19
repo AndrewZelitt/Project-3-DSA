@@ -41,6 +41,7 @@ public:
     }
 
     // Method to insert a song into the tree
+    // for sortBy 0 is title 1 is album 2 is artist 3 is length and 4 is year
     void insert(vector<string> song, int sortBy) {
         if (root == nullptr) {
             root = new BPlusTreeNode();
@@ -237,10 +238,10 @@ public:
     }
 
     // Method to search for songs based on criteria like title, artist, etc.
-    vector<vector<string>> search(const string& key) {
+    vector<vector<string>> search(const string& key, int attribute) {
         vector<vector<string>> result;
         if (root != nullptr) {
-            searchHelper(root, key, result);
+            searchHelper(root, key, result, attribute);
         }
         cout << result.size() << endl;
         return result;
@@ -250,18 +251,14 @@ public:
     //the best I was able to do was make it return both of them in the results
 
     // Helper function for search
-    void searchHelper(BPlusTreeNode* node, const string& key, vector<vector<string>>& result) {
+    void searchHelper(BPlusTreeNode* node, const string& key, vector<vector<string>>& result, int attribute) {
 
         if (node->children.empty()) {
             // Search for the key in the leaf node
             for (const auto& song : node->songs) {
 
                 //if (song.title == key || song.artist == key || song.album == key || song.length == key || song.year == key) {
-                if (strcasecmp(song[0].c_str(), key.c_str()) == 0 ||
-                    strcasecmp(song[1].c_str(), key.c_str()) == 0 ||
-                    strcasecmp(song[2].c_str(), key.c_str()) == 0 ||
-                    strcasecmp(song[3].c_str(), key.c_str()) == 0 ||
-                    strcasecmp(song[4].c_str(), key.c_str()) == 0) {
+                if (strcasecmp(song[attribute].c_str(), key.c_str()) == 0 ) {
                     if (count(result.begin(), result.end(), song) == 0) {
                         result.push_back(song);
                     }
@@ -273,7 +270,7 @@ public:
             //search for each different attribute
             //only other way I could think would require resorting the entire tree
             for (const auto& child : node->children) {
-                searchHelper(child, key, result);
+                searchHelper(child, key, result, attribute);
             }
         }
     }
@@ -517,7 +514,7 @@ int main() {
     vector<string> song3 = {"Apple", "Artist3", "C", "1354", "2010"};
     vector<string> song0 = {"Write", "Artist0", "D", "2019", "2011"};
     vector<string> song4 = {"Dongo", "Artist4", "E", "1258", "2010"};
-    vector<string> song5 = {"Join", "Artist5", "P", "1995", "2010"};
+    vector<string> song5 = {"Join", "Artist5", "O", "1995", "2010"};
     vector<string> song6 = {"Us", "Artist6", "F", "2015", "2010"};
     vector<string> song7 = {"Human", "Artist7", "G", "3111510", "2010"};
 
@@ -530,31 +527,6 @@ int main() {
     vector<string> song14 = {"Forest", "Artist14", "N", "280", "2018"};
     vector<string> song15 = {"Dongo", "Artist15", "O", "340", "2019"};
 
-    tree.insert(song1, 2);
-    tree.insert(song2, 2);
-    tree.insert(song3, 2);
-    tree.insert(song0, 2);
-    tree.insert(song4, 2);
-    tree.insert(song5, 2);
-    tree.insert(song6, 2);
-    tree.insert(song7, 2);
-    //tree.printTree();
-    tree.insert(song8, 2);
-    tree.insert(song9, 2);
-    tree.insert(song10, 2);
-    tree.insert(song11, 2);
-    tree.insert(song12, 2);
-    tree.insert(song13, 2);
-    tree.insert(song14, 2);
-    tree.insert(song15, 2);
-    tree.printTree();
-    cout << "split" << endl;
-    //tree.removeAll();
-    delete tree;
-
-
-    tree.printTree();
-    cout << "split" << endl;
     tree.insert(song1, 0);
     tree.insert(song2, 0);
     tree.insert(song3, 0);
@@ -563,7 +535,6 @@ int main() {
     tree.insert(song5, 0);
     tree.insert(song6, 0);
     tree.insert(song7, 0);
-    //tree.printTree();
     tree.insert(song8, 0);
     tree.insert(song9, 0);
     tree.insert(song10, 0);
@@ -574,6 +545,12 @@ int main() {
     tree.insert(song15, 0);
 
     tree.printTree();
+
+    vector<vector<string>> result = tree.search("O", 2);
+
+    for (int i = 0; i < result.size(); i++) {
+        cout << result[i][0] << endl;
+    }
 /*
     vector<vector<string>> songs = {
             {"Testify", "The Battle Of Los Angeles", "Rage Against The Machine", "210133", "1999"},
