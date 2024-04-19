@@ -396,7 +396,7 @@ void button_pressed(Fl_Choice* tree_type, Fl_Choice* operation_choice, Fl_Choice
 		search_option->update_timer(load_time, search_time, op_choice);
 }
 
-void updated_operation(Fl_Choice* operation_choice, Fl_Choice* sort_choice, Fl_Input* search_option, Fl_Choice* sort_dir) {
+void updated_operation(Fl_Choice* Tree_choice, Fl_Choice* operation_choice, Fl_Choice* sort_choice, Fl_Input* search_option, Fl_Choice* sort_dir) {
 	if (operation_choice->value() == 1) {
 		//search option
 		//sort_choice->remove(0);
@@ -404,7 +404,12 @@ void updated_operation(Fl_Choice* operation_choice, Fl_Choice* sort_choice, Fl_I
 		//sort_choice->value(6);
 		sort_choice->show();
 		search_option->show();
-		sort_dir->hide();
+		if (Tree_choice->value() == 1) {
+			sort_dir->show();
+		}
+		else {
+			sort_dir->hide();
+		}
 
 
 	}
@@ -412,7 +417,12 @@ void updated_operation(Fl_Choice* operation_choice, Fl_Choice* sort_choice, Fl_I
 		//sort option
 		sort_choice->show();
 		search_option->hide();
-		sort_dir->show();
+		if (Tree_choice->value() == 1) {
+			sort_dir->show();
+		}
+		else {
+			sort_dir->hide();
+		}
 	}
 	else {
 		sort_choice->hide();
@@ -618,9 +628,9 @@ int main(int argc, char** argv) {
 	//when the go button is pressed
 	FL_FUNCTION_CALLBACK_5( button, button_pressed, Fl_Choice*, tree_type, Fl_Choice*, operation_choice, Fl_Choice*, sorting_option, my_input*, search_option, Fl_Choice* , sort_dir );
 	//when the operation choice is changed
-	FL_FUNCTION_CALLBACK_4(operation_choice, updated_operation, Fl_Choice* , operation_choice, Fl_Choice*, sorting_option, Fl_Input*,  search_option, Fl_Choice* , sort_dir);
+	FL_FUNCTION_CALLBACK_5(operation_choice, updated_operation, Fl_Choice* , tree_type, Fl_Choice* , operation_choice, Fl_Choice*, sorting_option, Fl_Input*,  search_option, Fl_Choice* , sort_dir);
 	//when the choice of how to search for something is changed. might not be necessary
-	FL_FUNCTION_CALLBACK_4(sorting_option, updated_operation, Fl_Choice*, operation_choice, Fl_Choice*, sorting_option, Fl_Input*, search_option, Fl_Choice* , sort_dir);
+	FL_FUNCTION_CALLBACK_5(sorting_option, updated_operation, Fl_Choice*, tree_type, Fl_Choice*, operation_choice, Fl_Choice*, sorting_option, Fl_Input*, search_option, Fl_Choice* , sort_dir);
 	//int scrollbar_pos = 
 	FL_FUNCTION_CALLBACK_1(result_table, scrolled , output_table*, result_table);
 	
