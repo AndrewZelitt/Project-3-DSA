@@ -176,7 +176,6 @@ void button_pressed(Fl_Choice* tree_type, Fl_Choice* operation_choice, Fl_Choice
 	//and do the operations that are necessary;
 		int op_choice = operation_choice->value();
 		int arg = sorting_option->value();
-        //cout << arg << endl;
 		int arg1 = sort_dir->value();
 		int insertion_arg = 4;
 		if (arg == 0) {
@@ -328,38 +327,31 @@ void button_pressed(Fl_Choice* tree_type, Fl_Choice* operation_choice, Fl_Choice
 				cout << "Average Time: " << (avg_time / 3) << "\n";
 			}
 		} else if (tree_type->value() == 2) {
-		//put the b+ Tree testing code here
-		BPlusTree* BPlus = new BPlusTree;
-		vector<string>* song = new vector<string>;
-		auto start2 = std::chrono::high_resolution_clock::now();
-		for (int i = 0; i < input_data->size(); i++) {
-			song->emplace_back(input_data->at(i)[0]);
-			song->emplace_back(input_data->at(i)[1]);
-			song->emplace_back(input_data->at(i)[2]);
-            song->emplace_back(input_data->at(i)[3]);
-            song->emplace_back(input_data->at(i)[4]);
-			BPlus->insert(*song, 0);
-			song = new vector<string>;
-		}
-		auto finish2 = std::chrono::high_resolution_clock::now();
-		auto microseconds2 = std::chrono::duration_cast<std::chrono::microseconds>(finish2 - start2);
-		cout << "B+ load time: " << (float) microseconds2.count() / 1000000 << endl;
-		auto start3 = std::chrono::high_resolution_clock::now();
-        cout << search_option->value() << endl;
-		vector<vector<string>> searchResult = BPlus->search(search_option->value());
-        for (int i = 0; i < searchResult.size(); i++) {
-            cout << searchResult[i][0] << endl;
-            cout << searchResult[i][1] << endl;
-            cout << searchResult[i][2] << endl;
-            cout << searchResult[i][3] << endl;
-            cout << searchResult[i][4] << endl;
-        }
-		auto finish3 = std::chrono::high_resolution_clock::now();
-		auto microseconds3 = std::chrono::duration_cast<std::chrono::microseconds>(finish3 - start3);
-		cout << "B+ search time: " << (float)microseconds3.count() / 1000000 << endl;
-		vector<const char*> * songout = new vector<const char*>;
-        string* song_item = new string;
-		result_table->resetArray();
+
+		    //put the b+ Tree testing code here
+		    BPlusTree* BPlus = new BPlusTree;
+		    vector<string>* song = new vector<string>;
+		    auto start2 = std::chrono::high_resolution_clock::now();
+		    for (int i = 0; i < input_data->size(); i++) {
+                song->emplace_back(input_data->at(i)[0]);
+                song->emplace_back(input_data->at(i)[1]);
+                song->emplace_back(input_data->at(i)[2]);
+                song->emplace_back(input_data->at(i)[3]);
+                song->emplace_back(input_data->at(i)[4]);
+                BPlus->insert(*song, 0);
+		    }
+		    auto finish2 = std::chrono::high_resolution_clock::now();
+		    auto microseconds2 = std::chrono::duration_cast<std::chrono::microseconds>(finish2 - start2);
+		    cout << "B+ load time: " << (float) microseconds2.count() / 1000000 << endl;
+		    auto start3 = std::chrono::high_resolution_clock::now();
+            //attribute is 0 for title 1 fdr album 2 for artist 3 for length 4 for year
+		    vector<vector<string>> searchResult = BPlus->search(search_option->value(), arg - 1);
+            auto finish3 = std::chrono::high_resolution_clock::now();
+		    auto microseconds3 = std::chrono::duration_cast<std::chrono::microseconds>(finish3 - start3);
+		    cout << "B+ search time: " << (float)microseconds3.count() / 1000000 << endl;
+            vector<const char*> * songout = new vector<const char*>;
+            string* song_item = new string;
+            result_table->resetArray();
             for (auto songs : searchResult) {
                 *song_item = songs[0];
                 songout->push_back(song_item->c_str());
@@ -380,13 +372,11 @@ void button_pressed(Fl_Choice* tree_type, Fl_Choice* operation_choice, Fl_Choice
                 songout = new vector<const char*>;
                 //vector<const char>().swap(songout);
             }
-		cout << "hi" << endl;
             vector<vector<string>>().swap(searchResult);
-		//searchResult.clear();
-		result_table->show();
-		result_table->update_list();
-		
-	}
+		    //searchResult.clear();
+		    result_table->show();
+		    result_table->update_list();
+	    }
 		search_option->update_timer(load_time, search_time, op_choice);
 }
 
@@ -547,7 +537,7 @@ int main(int argc, char** argv) {
 	//ignore the first line;
 	vector<const char*> row;
 	getline(inputFile, buf, '\n');
-	for(int i = 0; i < 1000; i++){
+	for(int i = 0; i < 100; i++){
 		getline(inputFile, buf, '\n');
 	//while (getline(inputFile, buf, '\n')) {
 		buff.str(buf);
@@ -559,6 +549,7 @@ int main(int argc, char** argv) {
 				row.push_back((*temp).c_str());
 			}
 			else {
+			
 				if(temp->size() == 5 && ((*temp)[0] == '1' || ((*temp)[0]) == '2')){
 					(*temp).pop_back();
 				}
