@@ -360,6 +360,8 @@ void button_pressed(Fl_Choice* tree_type, Fl_Choice* operation_choice, Fl_Choice
             auto finish3 = std::chrono::high_resolution_clock::now();
 		    auto microseconds3 = std::chrono::duration_cast<std::chrono::microseconds>(finish3 - start3);
 		    cout << "B+ search time: " << (float)microseconds3.count() / 1000000 << endl;
+			load_time = (float)microseconds2.count() / 1000000;
+			search_time = (float)microseconds3.count() / 1000000;
             vector<const char*> * songout = new vector<const char*>;
             string* song_item = new string;
             result_table->resetArray();
@@ -384,6 +386,7 @@ void button_pressed(Fl_Choice* tree_type, Fl_Choice* operation_choice, Fl_Choice
                 //vector<const char>().swap(songout);
             }
             vector<vector<string>>().swap(searchResult);
+			//BPlus->removeAll();
 		    //searchResult.clear();
 		    result_table->show();
 		    result_table->update_list();
@@ -527,7 +530,7 @@ int main(int argc, char** argv) {
 	//ignore the first line;
 	vector<const char*> row;
 	getline(inputFile, buf, '\n');
-	for(int i = 0; i < 100; i++){
+	for(int i = 0; i < 10000; i++){
 		getline(inputFile, buf, '\n');
 	//while (getline(inputFile, buf, '\n')) {
 		buff.str(buf);
