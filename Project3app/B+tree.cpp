@@ -177,7 +177,7 @@ public:
         }
         parent->children.push_back(node);
         // Insert the middle key to the parent node
-        parent->songs.insert(parent->songs.begin() + distance(parent->children.begin(), find(parent->children.begin(), parent->children.end(), node)), node->songs[mid]);
+        parent->songs.insert(parent->songs.begin() + distance(parent->children.begin(), find(parent->children.begin(), parent->children.end(), node)), node->songs[mid-1]);
         // Insert the new node to the parent's children
         parent->children.insert(parent->children.begin() + distance(parent->children.begin(), find(parent->children.begin(), parent->children.end(), node)) + 1, newNode);
         // If the parent node now has too many keys, split it recursively

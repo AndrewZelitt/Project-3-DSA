@@ -338,14 +338,22 @@ void button_pressed(Fl_Choice* tree_type, Fl_Choice* operation_choice, Fl_Choice
                 song->emplace_back(input_data->at(i)[2]);
                 song->emplace_back(input_data->at(i)[3]);
                 song->emplace_back(input_data->at(i)[4]);
-                BPlus->insert(*song, 0);
+                BPlus->insert(*song, arg-1);
+				song = new vector<string>;
+
 		    }
 		    auto finish2 = std::chrono::high_resolution_clock::now();
 		    auto microseconds2 = std::chrono::duration_cast<std::chrono::microseconds>(finish2 - start2);
 		    cout << "B+ load time: " << (float) microseconds2.count() / 1000000 << endl;
 		    auto start3 = std::chrono::high_resolution_clock::now();
             //attribute is 0 for title 1 fdr album 2 for artist 3 for length 4 for year
-		    vector<vector<string>> searchResult = BPlus->search(search_option->value(), arg - 1);
+			vector<vector<string>> searchResult;
+			if (arg == 1) {
+				searchResult = BPlus->search(search_option->value(), arg - 1);
+			}
+			else {
+				searchResult = BPlus->leastToGreatest();
+			}
             auto finish3 = std::chrono::high_resolution_clock::now();
 		    auto microseconds3 = std::chrono::duration_cast<std::chrono::microseconds>(finish3 - start3);
 		    cout << "B+ search time: " << (float)microseconds3.count() / 1000000 << endl;
