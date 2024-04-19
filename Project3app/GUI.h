@@ -28,6 +28,5 @@
 #include <FL/Fl_Output.H>
 #include <FL/Fl_Multiline_Output.H>
 
-
 #include "AVLtree.cpp"
 #include "B+tree.cpp"

@@ -7,7 +7,7 @@ using namespace std;
 
 int winsize = 1380;
 
-//Some of this code has been adapted from the various example Code given by FLTK
+
 class output_table : public Fl_Table {
 private:
 	vector<vector<const char*>> datastore;
@@ -92,7 +92,7 @@ public:
 		fl_color(r, g, b);
 		fl_color(fl_color_average(FL_WHITE,fl_color(), 0.20)); fl_rectf(X, Y, W, H);
 		// Draw cell data
-		fl_color(FL_GRAY0); fl_draw(s, X, Y, W, H, FL_ALIGN_WRAP);
+		fl_color(FL_WHITE); fl_draw(s, X, Y, W, H, FL_ALIGN_WRAP);
 		// Draw box border
 		fl_color(color()); fl_rect(X, Y, W, H);
 		fl_pop_clip();
@@ -129,8 +129,12 @@ public:
 	}
 	void DrawHeader(const char* s, int X, int Y, int W, int H) {
 		fl_push_clip(X, Y, W, H);
-		fl_draw_box(FL_THIN_UP_BOX, X, Y, W, H, row_header_color());
-		fl_color(FL_BLACK);
+		char r = 15;
+		char g = 52;
+		char b = 128;
+		fl_color(r, g, b);
+		fl_draw_box(FL_THIN_UP_BOX, X, Y, W, H, fl_color());
+		fl_color(fl_color_average(FL_WHITE,fl_color(), 0.8));
 		fl_draw(s, X, Y, W, H, FL_ALIGN_CENTER);
 		fl_pop_clip();
 	}
@@ -150,8 +154,6 @@ public:
 		string send_to_stopwatch = "";
 		string load = to_string(load_time);
 		string search = to_string(search_time);
-		//sprintf(load, "%04f:", load_time);
-		//sprintf(search, "%04f:", search_time);
 		if (choice == 2) {
 			
 
@@ -183,152 +185,154 @@ void button_pressed(Fl_Choice* tree_type, Fl_Choice* operation_choice, Fl_Choice
 		}
 		float load_time = 0;
 		float search_time = 0;
+		string search = search_option->value();
+		if (search.size() < 220) {
+			if (tree_type->value() == 1) {
+				if (arg != 6) {
+					if (op_choice == 1) {
+						insertion_arg = 5;
+					}
+					else if (op_choice == 2) {
+						insertion_arg = arg;
+					}
+					//Create the new Tree
+					AVLtree* avl = new AVLtree;
+					//Set the data pointer
+					avl->raw_database = input_data;
 
-		if (tree_type->value() == 1) {
-			if (arg != 6) {
-				if (op_choice == 1) {
-					insertion_arg = 5;
-				}
-				else if (op_choice == 2) {
-					insertion_arg = arg;
-				}
-				//Create the new Tree
-				AVLtree* avl = new AVLtree;
-				//Set the data pointer
-				avl->raw_database = input_data;
+					//Start Timer
+					auto start = std::chrono::high_resolution_clock::now();
 
-				//Start Timer
-				auto start = std::chrono::high_resolution_clock::now();
+					//insert root value
+					avl->root = avl->insert(nullptr, 0, insertion_arg - 1, arg1);
 
-				//insert root value
-				avl->root = avl->insert(nullptr, 0, insertion_arg - 1, arg1);
-
-				//insert all of the datavalues into the tree based on the given choices.
-				result_table->hide();
-				for (int x = 1; x < input_data->size(); x++) {
-					avl->insert(avl->root, x, insertion_arg - 1, arg1);
-				}
-
-				//get time output for how long it took to insert everything.
-				auto finish = std::chrono::high_resolution_clock::now();
-				auto microseconds = std::chrono::duration_cast<std::chrono::microseconds>(finish - start);
-
-				//start second timer
-				auto start1 = std::chrono::high_resolution_clock::now();
-
-				//if just sorting then do traversal, if searching do search 
-				if (op_choice == 2) {
-					//just output the sorted data
-					avl->inorder(avl->root);
-				}
-				else if (op_choice == 1) {
-
-					//do search
-					string input = "Rage Against the Machine";
-					if (search_option->value() != "") {
-						input = search_option->value();
+					//insert all of the datavalues into the tree based on the given choices.
+					result_table->hide();
+					for (int x = 1; x < input_data->size(); x++) {
+						avl->insert(avl->root, x, insertion_arg - 1, arg1);
 					}
 
-					avl->search(avl->root, input, sorting_option->value() - 1, 0);
-				}
-				//Stop timer.
-				auto finish1 = std::chrono::high_resolution_clock::now();
-				auto microseconds1 = std::chrono::duration_cast<std::chrono::microseconds>(finish1 - start1);
+					//get time output for how long it took to insert everything.
+					auto finish = std::chrono::high_resolution_clock::now();
+					auto microseconds = std::chrono::duration_cast<std::chrono::microseconds>(finish - start);
 
-				//clear the current values in the table
-				result_table->resetArray();
-				//add new items into the table
-				for (int x = 0; x < avl->output_for_search.size(); x++) {
-					result_table->add_item(input_data->at(avl->output_for_search[x]));
-				}
+					//start second timer
+					auto start1 = std::chrono::high_resolution_clock::now();
 
-				cout << "Num items parsed: " << avl->num_items << "\n";
-				cout << "Height of tree: " << avl->root->height << "\n";
-				//delete the output array from the tree
-				vector<int>().swap(avl->output_for_search);
-				//avl->output_for_search.clear();
-				//delete each root from the tree.
-				avl->deleteAll(avl->root);
-				delete avl;
-				result_table->show();
-				result_table->update_list();
-				load_time = (float)microseconds.count() / 1000000;
-				search_time = (float)microseconds1.count() / 1000000;
-				cout << "load_time: " << load_time << "s \n";
-				cout << "search_time: " << search_time << "s\n";
-			}
-			else { //this is for testing purposes
-				//Times all operations to get average timing for testing. Also can be used to see memory efficiency.
-				float avg_time = 0;
-				//tests all combinations of actions that can be done. 
-				for (int i = 0; i < 3; i++) {
-					vector<string> searching = { "Hypnotize","Hypnotize","System Of A Down","191936","2005" };
-					vector<string> out = { "Title", "Album", "Artist", "Duration", "Release Year" };
-					vector<string> ascent = { "Ascending", "Descending" };
-					float total_time = 0;
-					float combined_time = 0;
-					float longest_time = 0;
-					int longest_s = 0;
-					int longest_a = 0;
-					int longest_se = 0;
-					for (int a = 0; a < 2; a++) {
-						for (int s = 4; s >= 0; s--) {
-							for (int se = 4; se >= 0; se--) {
-								AVLtree* avl = new AVLtree;
-								avl->raw_database = input_data;
-								auto start = std::chrono::high_resolution_clock::now();
-								avl->root = avl->insert(nullptr, 0, s, a);
-								result_table->hide();
-								for (int x = 1; x < input_data->size(); x++) {
-									avl->insert(avl->root, x, se, a);
+					//if just sorting then do traversal, if searching do search 
+					if (op_choice == 2) {
+						//just output the sorted data
+						avl->inorder(avl->root);
+					}
+					else if (op_choice == 1) {
+
+						//do search
+						string input = "Rage Against the Machine";
+						if (search_option->value() != "") {
+							input = search_option->value();
+						}
+
+						avl->search(avl->root, input, sorting_option->value() - 1, 0);
+					}
+					//Stop timer.
+					auto finish1 = std::chrono::high_resolution_clock::now();
+					auto microseconds1 = std::chrono::duration_cast<std::chrono::microseconds>(finish1 - start1);
+
+					//clear the current values in the table
+					result_table->resetArray();
+					//add new items into the table
+					for (int x = 0; x < avl->output_for_search.size(); x++) {
+						result_table->add_item(input_data->at(avl->output_for_search[x]));
+					}
+
+					cout << "Num items parsed: " << avl->num_items << "\n";
+					cout << "Height of tree: " << avl->root->height << "\n";
+					//delete the output array from the tree
+					vector<int>().swap(avl->output_for_search);
+					//avl->output_for_search.clear();
+					//delete each root from the tree.
+					avl->deleteAll(avl->root);
+					delete avl;
+					result_table->show();
+					result_table->update_list();
+					load_time = (float)microseconds.count() / 1000000;
+					search_time = (float)microseconds1.count() / 1000000;
+					cout << "load_time: " << load_time << "s \n";
+					cout << "search_time: " << search_time << "s\n";
+				}
+				else { //this is for testing purposes
+					//Times all operations to get average timing for testing. Also can be used to see memory efficiency.
+					float avg_time = 0;
+					//tests all combinations of actions that can be done. 
+					for (int i = 0; i < 3; i++) {
+						vector<string> searching = { "Hypnotize","Hypnotize","System Of A Down","191936","2005" };
+						vector<string> out = { "Title", "Album", "Artist", "Duration", "Release Year" };
+						vector<string> ascent = { "Ascending", "Descending" };
+						float total_time = 0;
+						float combined_time = 0;
+						float longest_time = 0;
+						int longest_s = 0;
+						int longest_a = 0;
+						int longest_se = 0;
+						for (int a = 0; a < 2; a++) {
+							for (int s = 4; s >= 0; s--) {
+								for (int se = 4; se >= 0; se--) {
+									AVLtree* avl = new AVLtree;
+									avl->raw_database = input_data;
+									auto start = std::chrono::high_resolution_clock::now();
+									avl->root = avl->insert(nullptr, 0, s, a);
+									result_table->hide();
+									for (int x = 1; x < input_data->size(); x++) {
+										avl->insert(avl->root, x, se, a);
+									}
+									auto finish = std::chrono::high_resolution_clock::now();
+									auto microseconds = std::chrono::duration_cast<std::chrono::microseconds>(finish - start);
+									auto start1 = std::chrono::high_resolution_clock::now();
+									string input = "Rage Against the Machine";
+									input = searching[se];
+									avl->search(avl->root, input, se, a);
+									result_table->resetArray();
+									auto finish1 = std::chrono::high_resolution_clock::now();
+									auto microseconds1 = std::chrono::duration_cast<std::chrono::microseconds>(finish1 - start1);
+									for (int x = 0; x < avl->output_for_search.size(); x++) {
+										result_table->add_item(input_data->at(avl->output_for_search[x]));
+									}
+									cout << "Sorted by: " << out[s] << " Searching with: " << out[se] << "\n";
+									cout << ascent[a] << "\n";
+									cout << "Number of items parsed: " << avl->num_items << "\n";
+									cout << "Height of tree: " << avl->root->height << "\n";
+									vector<int>().swap(avl->output_for_search);
+									avl->deleteAll(avl->root);
+									delete avl;
+									result_table->show();
+									result_table->update_list();
+									load_time = (float)microseconds.count() / 1000000;
+									search_time = (float)microseconds1.count() / 1000000;
+									combined_time = search_time + load_time;
+									total_time += combined_time;
+									if (combined_time > longest_time) {
+										longest_time = combined_time;
+										longest_a = a;
+										longest_s = s;
+										longest_se = se;
+									}
+									cout << "loading time: " << load_time << "s \n";
+									cout << "searching time: " << search_time << "s\n\n";
 								}
-								auto finish = std::chrono::high_resolution_clock::now();
-								auto microseconds = std::chrono::duration_cast<std::chrono::microseconds>(finish - start);
-								auto start1 = std::chrono::high_resolution_clock::now();
-								string input = "Rage Against the Machine";
-								input = searching[se];
-								avl->search(avl->root, input, se, a);
-								result_table->resetArray();
-								auto finish1 = std::chrono::high_resolution_clock::now();
-								auto microseconds1 = std::chrono::duration_cast<std::chrono::microseconds>(finish1 - start1);
-								for (int x = 0; x < avl->output_for_search.size(); x++) {
-									result_table->add_item(input_data->at(avl->output_for_search[x]));
-								}
-								cout << "Sorted by: " << out[s] << " Searching with: " << out[se] << "\n";
-								cout << ascent[a] << "\n";
-								cout << "Number of items parsed: " << avl->num_items << "\n";
-								cout << "Height of tree: " << avl->root->height << "\n";
-								vector<int>().swap(avl->output_for_search);
-								avl->deleteAll(avl->root);
-								delete avl;
-								result_table->show();
-								result_table->update_list();
-								load_time = (float)microseconds.count() / 1000000;
-								search_time = (float)microseconds1.count() / 1000000;
-								combined_time = search_time + load_time;
-								total_time += combined_time;
-								if (combined_time > longest_time) {
-									longest_time = combined_time;
-									longest_a = a;
-									longest_s = s;
-									longest_se = se;
-								}
-								cout << "loading time: " << load_time << "s \n";
-								cout << "searching time: " << search_time << "s\n\n";
 							}
 						}
+						cout << "Longest_time: " << longest_time << "\n";
+						cout << "Longest Combination: " << ascent[longest_a] << " Sorted By: " << out[longest_s] << " Looking for: " << out[longest_se] << "\n";
+						cout << "Total Time: " << total_time << "\n";
+						cout << "Average individual time: " << (total_time / (2 * 5 * 5)) << "\n\n\n";
+						avg_time += total_time;
 					}
-					cout << "Longest_time: " << longest_time << "\n";
-					cout << "Longest Combination: " << ascent[longest_a] << " Sorted By: " << out[longest_s] << " Looking for: " << out[longest_se] << "\n";
-					cout << "Total Time: " << total_time << "\n";
-					cout << "Average individual time: " << (total_time / (2 * 5 * 5)) << "\n\n\n";
-					avg_time += total_time;
+					cout << "Average Time: " << (avg_time / 3) << "\n";
 				}
-				cout << "Average Time: " << (avg_time / 3) << "\n";
 			}
-		} else if (tree_type->value() == 2) {
-
-		    //put the b+ Tree testing code here
+			else if (tree_type->value() == 2) {
+				//put the b+ Tree testing code here
+				   //put the b+ Tree testing code here
 		    BPlusTree* BPlus = new BPlusTree;
 		    vector<string>* song = new vector<string>;
 		    auto start2 = std::chrono::high_resolution_clock::now();
@@ -347,16 +351,17 @@ void button_pressed(Fl_Choice* tree_type, Fl_Choice* operation_choice, Fl_Choice
 		    cout << "B+ load time: " << (float) microseconds2.count() / 1000000 << endl;
 		    auto start3 = std::chrono::high_resolution_clock::now();
             //attribute is 0 for title 1 fdr album 2 for artist 3 for length 4 for year
-			vector<vector<string>> searchResult;
-			if (arg == 1) {
+		    vector<vector<string>> searchResult;
+			if(op_choice == 1){
 				searchResult = BPlus->search(search_option->value(), arg - 1);
-			}
-			else {
+			}else{
 				searchResult = BPlus->leastToGreatest();
 			}
             auto finish3 = std::chrono::high_resolution_clock::now();
 		    auto microseconds3 = std::chrono::duration_cast<std::chrono::microseconds>(finish3 - start3);
 		    cout << "B+ search time: " << (float)microseconds3.count() / 1000000 << endl;
+			load_time = (float)microseconds2.count() / 1000000;
+			search_time = (float)microseconds3.count() / 1000000;
             vector<const char*> * songout = new vector<const char*>;
             string* song_item = new string;
             result_table->resetArray();
@@ -381,22 +386,30 @@ void button_pressed(Fl_Choice* tree_type, Fl_Choice* operation_choice, Fl_Choice
                 //vector<const char>().swap(songout);
             }
             vector<vector<string>>().swap(searchResult);
+			//BPlus->removeAll();
 		    //searchResult.clear();
 		    result_table->show();
 		    result_table->update_list();
-	    }
+
+			}
+		}
 		search_option->update_timer(load_time, search_time, op_choice);
 }
 
-void updated_operation(Fl_Choice* operation_choice, Fl_Choice* sort_choice, Fl_Input* search_option, Fl_Choice* sort_dir) {
+void updated_operation(Fl_Choice* Tree_choice, Fl_Choice* operation_choice, Fl_Choice* sort_choice, Fl_Input* search_option, Fl_Choice* sort_dir) {
 	if (operation_choice->value() == 1) {
 		//search option
 		//sort_choice->remove(0);
-		sort_choice->add("Search type");
-		sort_choice->value(6);
+		//sort_choice->add("Search type");
+		//sort_choice->value(6);
 		sort_choice->show();
 		search_option->show();
-		sort_dir->hide();
+		if (Tree_choice->value() == 1) {
+			sort_dir->show();
+		}
+		else {
+			sort_dir->hide();
+		}
 
 
 	}
@@ -404,7 +417,12 @@ void updated_operation(Fl_Choice* operation_choice, Fl_Choice* sort_choice, Fl_I
 		//sort option
 		sort_choice->show();
 		search_option->hide();
-		sort_dir->show();
+		if (Tree_choice->value() == 1) {
+			sort_dir->show();
+		}
+		else {
+			sort_dir->hide();
+		}
 	}
 	else {
 		sort_choice->hide();
@@ -438,34 +456,6 @@ void scrolled(output_table* result_table){
 }
 
 
-
-
-
-/*
-//adapted from the example code for autowidth for a table from fltk.
-void output_table::autowidth(int pad) {
-	int w, h;
-	static const char *G_header[] = { "Name", "Album","Artists","Duration","Year" };
-	// Initialize all column widths to header width
-	fl_font(FL_HELVETICA, 12);
-	for (int c = 0; G_header[c]; c++) {
-		w = 0; fl_measure(G_header[c], w, h, 0);                   // pixel width of header text
-		col_width(c, w + pad);
-	}
-	fl_font(FL_HELVETICA, 12);
-	for (int r = 0; r < (int)datastore.size(); r++) {
-		for (int c = 0; c < (int)datastore[r].size(); c++) {
-			w = 0; fl_measure(datastore[r][c], w, h, 0);       // pixel width of row text
-			if ((w + pad) > col_width(c)) col_width(c, w + pad);
-		}
-	}
-	table_resized();
-	redraw();
-}
-*/
-
-
-
 int main(int argc, char** argv) {
 	
 	my_window* window = new my_window(1380, 768);
@@ -485,8 +475,9 @@ int main(int argc, char** argv) {
 	
 	//formatting
 	title->box(FL_UP_BOX);
-	title->labelfont(FL_HELVETICA );
+	title->labelfont(FL_HELVETICA);
 	title->labelsize(36);
+	title->labelcolor(FL_WHITE);
 
 	button->labelsize(30);
 
@@ -496,7 +487,7 @@ int main(int argc, char** argv) {
 	operation_choice->add("Operations | Search | Sort");
 	operation_choice->value(0);
 
-	sorting_option->add("Sort By: | Title | Album | Artist Name | Duration | Release Year");
+	sorting_option->add("Sort or Search By: | Title | Album | Artist Name | Duration | Release Year");
 	sorting_option->value(0);
 	sorting_option->hide();
 
@@ -509,6 +500,7 @@ int main(int argc, char** argv) {
 
 
 	result_table->hide();
+	
 
 	sort_dir->add("Ascending | Descending");
 	sort_dir->value(0);
@@ -521,11 +513,13 @@ int main(int argc, char** argv) {
 	window->color(fl_rgb_color(r, g, b));
 	title->color(fl_rgb_color(r, g, b));
 	title->box(FL_NO_BOX);
-	
+	result_table->color(fl_rgb_color(r, g, b));
 	
 	button->box(FL_UP_BOX);
-	tree_type->box(FL_NO_BOX);
+	tree_type->box(FL_SHADOW_BOX);
 	operation_choice->box(FL_SHADOW_BOX);
+	search_option->box(FL_SHADOW_BOX);
+	sorting_option->box(FL_SHADOW_BOX);
 	search_option->stopwatch->box(FL_FLAT_BOX);
 	sort_dir->box(FL_SHADOW_BOX);
 	
@@ -539,13 +533,14 @@ int main(int argc, char** argv) {
 		cout << "error, could not read file :(";
 		return 1;
 	}
+	
 	string buf;
 	stringstream buff;
 	string* temp = new string;
 	//ignore the first line;
 	vector<const char*> row;
 	getline(inputFile, buf, '\n');
-	for(int i = 0; i < 100; i++){
+	for(int i = 0; i < 10000; i++){
 		getline(inputFile, buf, '\n');
 	//while (getline(inputFile, buf, '\n')) {
 		buff.str(buf);
@@ -633,9 +628,9 @@ int main(int argc, char** argv) {
 	//when the go button is pressed
 	FL_FUNCTION_CALLBACK_5( button, button_pressed, Fl_Choice*, tree_type, Fl_Choice*, operation_choice, Fl_Choice*, sorting_option, my_input*, search_option, Fl_Choice* , sort_dir );
 	//when the operation choice is changed
-	FL_FUNCTION_CALLBACK_4(operation_choice, updated_operation, Fl_Choice* , operation_choice, Fl_Choice*, sorting_option, Fl_Input*,  search_option, Fl_Choice* , sort_dir);
+	FL_FUNCTION_CALLBACK_5(operation_choice, updated_operation, Fl_Choice* , tree_type, Fl_Choice* , operation_choice, Fl_Choice*, sorting_option, Fl_Input*,  search_option, Fl_Choice* , sort_dir);
 	//when the choice of how to search for something is changed. might not be necessary
-	FL_FUNCTION_CALLBACK_4(sorting_option, updated_operation, Fl_Choice*, operation_choice, Fl_Choice*, sorting_option, Fl_Input*, search_option, Fl_Choice* , sort_dir);
+	FL_FUNCTION_CALLBACK_5(sorting_option, updated_operation, Fl_Choice*, tree_type, Fl_Choice*, operation_choice, Fl_Choice*, sorting_option, Fl_Input*, search_option, Fl_Choice* , sort_dir);
 	//int scrollbar_pos = 
 	FL_FUNCTION_CALLBACK_1(result_table, scrolled , output_table*, result_table);
 	
