@@ -341,7 +341,6 @@ void button_pressed(Fl_Choice* tree_type, Fl_Choice* operation_choice, Fl_Choice
 			BPlus->insert(*song, 0);
 			song = new vector<string>;
 		}
-
 		auto finish2 = std::chrono::high_resolution_clock::now();
 		auto microseconds2 = std::chrono::duration_cast<std::chrono::microseconds>(finish2 - start2);
 		cout << "B+ load time: " << (float) microseconds2.count() / 1000000 << endl;
@@ -548,7 +547,7 @@ int main(int argc, char** argv) {
 	//ignore the first line;
 	vector<const char*> row;
 	getline(inputFile, buf, '\n');
-	for(int i = 0; i < 100; i++){
+	for(int i = 0; i < 1000; i++){
 		getline(inputFile, buf, '\n');
 	//while (getline(inputFile, buf, '\n')) {
 		buff.str(buf);
@@ -560,7 +559,6 @@ int main(int argc, char** argv) {
 				row.push_back((*temp).c_str());
 			}
 			else {
-			
 				if(temp->size() == 5 && ((*temp)[0] == '1' || ((*temp)[0]) == '2')){
 					(*temp).pop_back();
 				}
