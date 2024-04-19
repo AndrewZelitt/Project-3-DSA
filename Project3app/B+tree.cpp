@@ -101,7 +101,6 @@ public:
                 }
                 indexI--;
             }
-
             insertHelper(node->children[indexI], song, sortBy);
         }
     }
@@ -219,11 +218,11 @@ public:
             auto iter = parent->songs.begin();
             int i = 0;
             for (; iter != parent->songs.end(); iter++) {
-                i++;
                 //if (iter[sortBy] >= song[sortBy]) {
                 if (strcasecmp(parent->songs[i][sortBy].c_str(), song[sortBy].c_str()) >= 0) {
                     break;
                 }
+                i++;
             }
 
             // Insert the right child pointer
@@ -243,6 +242,7 @@ public:
         if (root != nullptr) {
             searchHelper(root, key, result);
         }
+        cout << result.size() << endl;
         return result;
     }
 
@@ -255,29 +255,19 @@ public:
         if (node->children.empty()) {
             // Search for the key in the leaf node
             for (const auto& song : node->songs) {
+
                 //if (song.title == key || song.artist == key || song.album == key || song.length == key || song.year == key) {
                 if (strcasecmp(song[0].c_str(), key.c_str()) == 0 ||
                     strcasecmp(song[1].c_str(), key.c_str()) == 0 ||
                     strcasecmp(song[2].c_str(), key.c_str()) == 0 ||
                     strcasecmp(song[3].c_str(), key.c_str()) == 0 ||
                     strcasecmp(song[4].c_str(), key.c_str()) == 0) {
-                    result.push_back(song);
+                    if (count(result.begin(), result.end(), song) == 0) {
+                        result.push_back(song);
+                    }
                 }
             }
         } else {
-            // Descend to the appropriate child node
-            /*
-            int i = 0;
-
-            while (i < node->songs.size() && key >= node->songs[i].title) {
-                i++;
-            }
-
-
-            cout << "recursion" << endl;
-            cout << i << endl;
-            searchHelper(node->children[i], key, result);
-            */
 
             //awful time complexity but this is the only way I could get it to be able to
             //search for each different attribute
@@ -448,14 +438,14 @@ public:
         if (node->children.empty()) {
             cout << "Leaf Node - ";
             for (const auto& song : node->songs) {
-                cout << song[0] << ", ";
+                cout << song[0] << " " << song[2] << ", ";
             }
         }
 
         else if(node == root) {
             cout << "Root Node - ";
             for (const auto& song : node->songs) {
-                cout << song[0] << ", ";
+                cout << song[0] << " " << song[2] << ", ";
             }
             cout << endl;
             // Recursively print child nodes
@@ -467,7 +457,7 @@ public:
         else {
             cout << "Internal Node - ";
             for (const auto& song : node->songs) {
-                cout << song[0] << ", ";
+                cout << song[0] << " " << song[2] << ", ";
             }
             cout << endl;
             // Recursively print child nodes
@@ -478,59 +468,93 @@ public:
         cout << endl;
     }
 
-    vector<vector<string>> findGreatestToLeast() {
+    vector<vector<string>> leastToGreatest() {
         vector<vector<string>> result;
         if (root != nullptr) {
-            findGreatestToLeastHelper(root, result);
+            leastToGreatestHelper(root, result);
         }
         return result;
     }
 
-    vector<vector<string>> findGreatestToLeastHelper(BPlusTreeNode* node, vector<vector<string>> result) {
+    void leastToGreatestHelper(BPlusTreeNode* node, vector<vector<string>>& result) {
         if (node->children.empty()) {
             for (const auto& song : node->songs) {
                 result.push_back(song);
             }
         }
         // Recursively print child nodes
-        for (const auto& child : node->children) {
-            findGreatestToLeastHelper(child, result);
+        else {
+            for (const auto& child : node->children) {
+                leastToGreatestHelper(child, result);
+            }
         }
     }
 
-    void removeAll(BPlusTreeNode* node) {
+    void removeAll() {
+        removeAllHelper(root);
+    }
+
+    void removeAllHelper(BPlusTreeNode* node) {
         if (node->children.empty()) {
-            node = nullptr;
+            delete node;
+            return;
         }
         // Recursively print child nodes
-        for (const auto& child : node->children) {
-            removeAll(child);
+        else {
+            for (const auto& child : node->children) {
+                removeAllHelper(child);
+            }
         }
+        delete node;
     }
-
 };
 /*
 int main() {
     BPlusTree tree;
-/*
-    vector<string> song1 = {"Bomb", "Artist1", "Album1", "2000", "1992"};
-    vector<string> song2 = {"Song", "Artist2", "Album2", "2005", "1995"};
-    vector<string> song3 = {"Apple", "Artist3", "Album3", "1354", "2010"};
-    vector<string> song0 = {"Write", "Artist0", "Album0", "2019", "2011"};
-    vector<string> song4 = {"Dongo", "Artist4", "Album4", "1258", "2010"};
-    vector<string> song5 = {"Join", "Artist5", "Artist4", "1995", "2010"};
-    vector<string> song6 = {"Us", "Artist6", "Album6", "2015", "2010"};
-    vector<string> song7 = {"Human", "Artist7", "Album7", "3111510", "2010"};
 
-    vector<string> song8 = {"Sunshine", "Artist8", "Album8", "180", "2012"};
-    vector<string> song9 = {"Moonlight", "Artist9", "Album9", "240", "2013"};
-    vector<string> song10 = {"Stars", "Artist10", "Album0", "210", "2014"};
-    vector<string> song11 = {"Galaxy", "Artist11", "Album11", "300", "2015"};
-    vector<string> song12 = {"Ocean", "Artist2", "Album12", "2010", "2016"};
-    vector<string> song13 = {"Mountain", "Artist13", "Album13", "320", "2017"};
-    vector<string> song14 = {"Forest", "Artist14", "Album14", "280", "2018"};
-    vector<string> song15 = {"Dongo", "Artist15", "Album15", "340", "2019"};
+    vector<string> song1 = {"Bomb", "Artist1", "A", "2000", "1992"};
+    vector<string> song2 = {"Song", "Artist2", "B", "2005", "1995"};
+    vector<string> song3 = {"Apple", "Artist3", "C", "1354", "2010"};
+    vector<string> song0 = {"Write", "Artist0", "D", "2019", "2011"};
+    vector<string> song4 = {"Dongo", "Artist4", "E", "1258", "2010"};
+    vector<string> song5 = {"Join", "Artist5", "P", "1995", "2010"};
+    vector<string> song6 = {"Us", "Artist6", "F", "2015", "2010"};
+    vector<string> song7 = {"Human", "Artist7", "G", "3111510", "2010"};
 
+    vector<string> song8 = {"Sunshine", "Artist8", "H", "180", "2012"};
+    vector<string> song9 = {"Moonlight", "Artist9", "I", "240", "2013"};
+    vector<string> song10 = {"Stars", "Artist10", "J", "210", "2014"};
+    vector<string> song11 = {"Galaxy", "Artist11", "K", "300", "2015"};
+    vector<string> song12 = {"Ocean", "Artist2", "L", "2010", "2016"};
+    vector<string> song13 = {"Mountain", "Artist13", "M", "320", "2017"};
+    vector<string> song14 = {"Forest", "Artist14", "N", "280", "2018"};
+    vector<string> song15 = {"Dongo", "Artist15", "O", "340", "2019"};
+
+    tree.insert(song1, 2);
+    tree.insert(song2, 2);
+    tree.insert(song3, 2);
+    tree.insert(song0, 2);
+    tree.insert(song4, 2);
+    tree.insert(song5, 2);
+    tree.insert(song6, 2);
+    tree.insert(song7, 2);
+    //tree.printTree();
+    tree.insert(song8, 2);
+    tree.insert(song9, 2);
+    tree.insert(song10, 2);
+    tree.insert(song11, 2);
+    tree.insert(song12, 2);
+    tree.insert(song13, 2);
+    tree.insert(song14, 2);
+    tree.insert(song15, 2);
+    tree.printTree();
+    cout << "split" << endl;
+    //tree.removeAll();
+    delete tree;
+
+
+    tree.printTree();
+    cout << "split" << endl;
     tree.insert(song1, 0);
     tree.insert(song2, 0);
     tree.insert(song3, 0);
@@ -539,6 +563,7 @@ int main() {
     tree.insert(song5, 0);
     tree.insert(song6, 0);
     tree.insert(song7, 0);
+    //tree.printTree();
     tree.insert(song8, 0);
     tree.insert(song9, 0);
     tree.insert(song10, 0);
@@ -547,9 +572,9 @@ int main() {
     tree.insert(song13, 0);
     tree.insert(song14, 0);
     tree.insert(song15, 0);
-    //tree.printTree();
 
-
+    tree.printTree();
+/*
     vector<vector<string>> songs = {
             {"Testify", "The Battle Of Los Angeles", "Rage Against The Machine", "210133", "1999"},
             {"Guerrilla Radio", "The Battle Of Los Angeles", "Rage Against The Machine", "206200", "1999"},
@@ -569,13 +594,13 @@ int main() {
         cout << song[0] << endl;
         tree.insert(song, 0);
     }
+
     cout << "doesnt make it" << endl;
     vector<vector<string>> result;
-    result = tree.findGreatestToLeast();
+    result = tree.leastToGreatest();
     cout << result.size() << endl;
     for (int i = 0; i < result.size(); i++) {
-        cout << i << endl;
-        cout << result[i][0] << endl;
+        cout << result[i][0] << " " << result[i][2] << endl;
     }
 
     return 0;
