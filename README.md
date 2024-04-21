@@ -18,4 +18,9 @@ To install the Library, download the zip file from the repository, extract it an
    2. Go to Project and select "Delete Cache and Reconfigure"
    3. Once that runs, it should say "x64 Debug" or something similar next to a green triangle at the top of the screen, open that dropdown menu and select "x64 Release", and in the drop down to the right of that select "GUI.exe"
    4. Lastly click on the green bordered triangle to the right of the dropdown menu to run the program.
-   
+  ### CLion
+   1. Clone the repository
+   2. Right click the CMakeLists.txt file inside the Project3app folder and select "Load CMake Project"
+   3. Repeat this for the same file in the cmake-build-debug folder
+   4. Next select the build button to build the project
+   5. Finally select the run button to run the project
