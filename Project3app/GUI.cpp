@@ -494,7 +494,7 @@ int main(int argc, char** argv) {
 
 	search_option->stopwatch->value("Time Taken: 0s");
 	search_option->stopwatch->wrap(FL_ALIGN_TOP);
-	search_option->stopwatch->textsize(search_option->stopwatch->textsize()*1.5);
+	search_option->stopwatch->textsize(search_option->stopwatch->textsize()*1.2);
 
 
 	result_table->hide();
