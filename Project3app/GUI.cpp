@@ -344,8 +344,8 @@ void button_pressed(Fl_Choice* tree_type, Fl_Choice* operation_choice, Fl_Choice
                 song->emplace_back(input_data->at(i)[4]);
                 BPlus->insert(*song, arg-1);
 				song = new vector<string>;
-
 		    }
+
 		    auto finish2 = std::chrono::high_resolution_clock::now();
 		    auto microseconds2 = std::chrono::duration_cast<std::chrono::microseconds>(finish2 - start2);
 		    cout << "B+ load time: " << (float) microseconds2.count() / 1000000 << endl;
