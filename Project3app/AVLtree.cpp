@@ -34,64 +34,130 @@ TreeNode* AVLtree::insert(TreeNode* root, int pos, int arg, int arg1) {
     case 0:
     {
         // adding the new song into the list based on its decided value
-        if (strcasecmp(this->raw_database->at(pos)[arg], this->raw_database->at(root->position_in_vector)[arg]) < 0){
-            // changing the base root of the tree when necessary
-            if (root == this->root) {
-                
-                this->root->left = insert(root->left, pos, arg, arg1);
-                root->left->parent = root;
-            }
-            else {
-                root->left = insert(root->left, pos, arg, arg1);
-                root->left->parent = root;
-            }
-        }
-        else  if (strcasecmp(this->raw_database->at(pos)[arg], this->raw_database->at(root->position_in_vector)[arg]) > 0){
-            // changing the base root of the tree when necessary
-            if (root == this->root) {
-                this->root->right = insert(root->right, pos, arg, arg1);
-                root->right->parent = root;
-            }
-            else {
-                root->right = insert(root->right, pos, arg, arg1);
-                root->right->parent = root;
-            }
-        }
-        else  if ( strcasecmp(this->raw_database->at(pos)[arg], this->raw_database->at(root->position_in_vector)[arg]) == 0){
-            root->dupes.push_back(new TreeNode(pos));
+        if (arg != 3) {
+            if (strcasecmp(this->raw_database->at(pos)[arg], this->raw_database->at(root->position_in_vector)[arg]) < 0) {
+                // changing the base root of the tree when necessary
+                if (root == this->root) {
 
+                    this->root->left = insert(root->left, pos, arg, arg1);
+                    root->left->parent = root;
+                }
+                else {
+                    root->left = insert(root->left, pos, arg, arg1);
+                    root->left->parent = root;
+                }
+            }
+            else  if (strcasecmp(this->raw_database->at(pos)[arg], this->raw_database->at(root->position_in_vector)[arg]) > 0) {
+                // changing the base root of the tree when necessary
+                if (root == this->root) {
+                    this->root->right = insert(root->right, pos, arg, arg1);
+                    root->right->parent = root;
+                }
+                else {
+                    root->right = insert(root->right, pos, arg, arg1);
+                    root->right->parent = root;
+                }
+            }
+            else  if (strcasecmp(this->raw_database->at(pos)[arg], this->raw_database->at(root->position_in_vector)[arg]) == 0) {
+                root->dupes.push_back(new TreeNode(pos));
+
+            }
+        }
+        else {
+            if (atoi(this->raw_database->at(pos)[arg]) <  atoi(this->raw_database->at(root->position_in_vector)[arg])) {
+                // changing the base root of the tree when necessary
+                if (root == this->root) {
+
+                    this->root->left = insert(root->left, pos, arg, arg1);
+                    root->left->parent = root;
+                }
+                else {
+                    root->left = insert(root->left, pos, arg, arg1);
+                    root->left->parent = root;
+                }
+            }
+            else  if (atoi(this->raw_database->at(pos)[arg]) > atoi(this->raw_database->at(root->position_in_vector)[arg])) {
+                // changing the base root of the tree when necessary
+                if (root == this->root) {
+                    this->root->right = insert(root->right, pos, arg, arg1);
+                    root->right->parent = root;
+                }
+                else {
+                    root->right = insert(root->right, pos, arg, arg1);
+                    root->right->parent = root;
+                }
+            }
+            else  if (strcasecmp(this->raw_database->at(pos)[arg], this->raw_database->at(root->position_in_vector)[arg]) == 0) {
+                root->dupes.push_back(new TreeNode(pos));
+
+            }
         }
         break;
     }
     case 1:
-        // adding the new song into the list based on its decided value
-        if ( strcasecmp(this->raw_database->at(pos)[arg], this->raw_database->at(root->position_in_vector)[arg]) > 0){
-            // changing the base root of the tree when necessary
-            if (root == this->root) {
+        if (arg != 3) {
+            // adding the new song into the list based on its decided value
+            if (atoi(this->raw_database->at(pos)[arg]) > atoi(this->raw_database->at(root->position_in_vector)[arg])) {
+                // changing the base root of the tree when necessary
+                if (root == this->root) {
 
-                this->root->left = insert(root->left, pos, arg, arg1);
-                root->left->parent = root;
+                    this->root->left = insert(root->left, pos, arg, arg1);
+                    root->left->parent = root;
+                }
+                else {
+
+                    root->left = insert(root->left, pos, arg, arg1);
+                    root->left->parent = root;
+                }
             }
-            else {
-                
-                root->left = insert(root->left, pos, arg, arg1);
-                root->left->parent = root;
+            else  if (atoi(this->raw_database->at(pos)[arg]) < atoi(this->raw_database->at(root->position_in_vector)[arg])) {
+                // changing the base root of the tree when necessary
+                if (root == this->root) {
+                    this->root->right = insert(root->right, pos, arg, arg1);
+                    root->right->parent = root;
+                }
+                else {
+
+                    root->right = insert(root->right, pos, arg, arg1);
+                    root->right->parent = root;
+                }
+            }
+            else  if (strcasecmp(this->raw_database->at(pos)[arg], this->raw_database->at(root->position_in_vector)[arg]) == 0) {
+                //if ((string)this->raw_database->at(pos)[arg] == (string)this->raw_database->at(root->position_in_vector)[arg]) {
+                root->dupes.push_back(new TreeNode(pos));
             }
         }
-        else  if ( strcasecmp(this->raw_database->at(pos)[arg], this->raw_database->at(root->position_in_vector)[arg]) < 0){
-            // changing the base root of the tree when necessary
-            if (root == this->root) {
-                this->root->right = insert(root->right, pos, arg, arg1);
-                root->right->parent = root;
+        else {
+            // adding the new song into the list based on its decided value
+            if (strcasecmp(this->raw_database->at(pos)[arg], this->raw_database->at(root->position_in_vector)[arg]) > 0) {
+                // changing the base root of the tree when necessary
+                if (root == this->root) {
+
+                    this->root->left = insert(root->left, pos, arg, arg1);
+                    root->left->parent = root;
+                }
+                else {
+
+                    root->left = insert(root->left, pos, arg, arg1);
+                    root->left->parent = root;
+                }
             }
-            else {
-                
-                root->right = insert(root->right, pos, arg, arg1);
-                root->right->parent = root;
+            else  if (strcasecmp(this->raw_database->at(pos)[arg], this->raw_database->at(root->position_in_vector)[arg]) < 0) {
+                // changing the base root of the tree when necessary
+                if (root == this->root) {
+                    this->root->right = insert(root->right, pos, arg, arg1);
+                    root->right->parent = root;
+                }
+                else {
+
+                    root->right = insert(root->right, pos, arg, arg1);
+                    root->right->parent = root;
+                }
             }
-        }else  if ( strcasecmp(this->raw_database->at(pos)[arg], this->raw_database->at(root->position_in_vector)[arg]) == 0){
-        //if ((string)this->raw_database->at(pos)[arg] == (string)this->raw_database->at(root->position_in_vector)[arg]) {
-            root->dupes.push_back(new TreeNode(pos));
+            else  if (strcasecmp(this->raw_database->at(pos)[arg], this->raw_database->at(root->position_in_vector)[arg]) == 0) {
+                //if ((string)this->raw_database->at(pos)[arg] == (string)this->raw_database->at(root->position_in_vector)[arg]) {
+                root->dupes.push_back(new TreeNode(pos));
+            }
         }
         break;
     }
