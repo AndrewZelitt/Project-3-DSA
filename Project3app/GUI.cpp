@@ -238,7 +238,7 @@ void button_pressed(Fl_Choice* tree_type, Fl_Choice* operation_choice, Fl_Choice
 							input = search_option->value();
 						}
 
-						avl->search(avl->root, input, sorting_option->value() - 1, 0);
+						avl->search(avl->root, input, sorting_option->value() - 1, arg1);
 					}
 					//Stop timer.
 					auto finish1 = std::chrono::high_resolution_clock::now();
@@ -405,13 +405,7 @@ void updated_operation(Fl_Choice* Tree_choice, Fl_Choice* operation_choice, Fl_C
 	if (operation_choice->value() == 1) {
 		sort_choice->show();
 		search_option->show();
-		if (Tree_choice->value() == 1) {
-			sort_dir->show();
-		}
-		else {
-			sort_dir->hide();
-		}
-
+		sort_dir->hide();
 
 	}
 	//if sorting

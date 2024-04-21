@@ -178,12 +178,8 @@ TreeNode* AVLtree::right_balance(TreeNode* root) {
 }
 
 void AVLtree::search(TreeNode* root, string input, int arg, int arg1) {
-    // based on the input value it will search for the node with the correct type
-    // either ID or name
-    //ID is used for duration and year
-    //Name is used for the rest.
     if (arg >= 3) {
-        searchID(root, input, arg, arg1);
+        searchn(root, input, arg);
     }
     else {
         searchn(root, input, arg);
@@ -233,38 +229,45 @@ void AVLtree::searchn(TreeNode* root, string name, int arg) {
 }
 
 // searching for a specific number value
+// not used as sorting makes it do weird things.
 void AVLtree::searchID(TreeNode* root, string input, int arg, int arg1) {
 
-    if (root != NULL) {
-        if (strcasecmp(input.c_str(), this->raw_database->at(root->position_in_vector)[arg]) == 0) {
-            this->output_for_search.push_back(root->position_in_vector);
-            for (TreeNode* duplicates : root->dupes) {
-                searchID(duplicates, input, arg, arg1);
+    if (root == nullptr) {
+        return;
+    }
+    if (root == this->root) {
+        this->maxid = max_id(root);
+    }
+    searchID(root->left, input, arg, arg1);
+    if (atoi(input.c_str()) == atoi(this->raw_database->at(root->position_in_vector)[arg])) {
+        this->output_for_search.push_back(root->position_in_vector);
+        for (TreeNode* duplicates : root->dupes) {
+            if (atoi(input.c_str()) == atoi(this->raw_database->at(root->position_in_vector)[arg])) {
+                this->output_for_search.push_back(duplicates->position_in_vector);
             }
         }
-        else {
-            if (arg1) {
-                //ascending
-                if (strcasecmp(input.c_str(), this->raw_database->at(root->position_in_vector)[arg]) < 0) {
-                    searchID(root->left, input, arg, arg1);
-                }
-                else {
-                    searchID(root->right, input, arg, arg1);
-                }
-            }
-            else {
-                //descending
-                if (strcasecmp(input.c_str(), this->raw_database->at(root->position_in_vector)[arg]) > 0) {
-                    searchID(root->left, input, arg, arg1);
-                }
-                else {
-                    searchID(root->right, input, arg, arg1);
-                }
+        this->found = 1;
+    }
+    else {
+        for (TreeNode* duplicates : root->dupes) {
+            if (atoi(input.c_str()) == atoi(this->raw_database->at(root->position_in_vector)[arg])) {
+                this->output_for_search.push_back(duplicates->position_in_vector);
+                this->found = 1;
             }
         }
     }
-    else {
-        return;
+    searchID(root->right, input, arg, arg1);
+    if (root->position_in_vector == this->maxid) {
+        for (TreeNode* duplicates : root->dupes) {
+            if (atoi(input.c_str()) == atoi(this->raw_database->at(root->position_in_vector)[arg])) {
+                this->output_for_search.push_back(duplicates->position_in_vector);
+                this->found = 1;
+            }
+        }
+        if (this->found == 0) {
+            this->found = 0;
+            return;
+        }
     }
 }
 
