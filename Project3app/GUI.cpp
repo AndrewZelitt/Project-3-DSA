@@ -15,6 +15,7 @@ private:
 public:
 	int prev_width = 1380;
 	Fl_Scrollbar* scroll;
+	//litely taken from FLTK Table example
 	output_table(int x, int y, int w, int h, const char* l = 0) : Fl_Table(x, y, w, h, l) {
 		vector<const char*> temp = { "Title","Album","Artists","Duration","Year" };
 		datastore.push_back(temp);
@@ -27,7 +28,6 @@ public:
 		// Cols
 		cols(5);             // how many columns
 		col_header(1);              // enable column headers (along top)
-		//col_width_all(w/5-50);          // default width of columns
 		col_width_all(75);
 		col_resize(1);              // enable column resizing
 		end();
@@ -38,14 +38,15 @@ public:
 		scroll = vscrollbar;
 	}
 	
+	//adds item to vector
 	void add_item(vector<const char*> column);
 
-
+	//empties the output vector
 	void resetArray() {
-		datastore.clear();
+		vector<vector<const char*>>().swap(datastore);
 	}
 
-	
+	//Update the sizes of the cells to fit.
 	void update_list() {
 		rows(datastore.size());
 
@@ -83,6 +84,8 @@ public:
 			}
 			prev_width = this->wiw;
 	}
+	//litely taken from FLTK Table example
+	//draws the data into the table
 	void DrawData(const char* s, int X, int Y, int W, int H) {
 		fl_push_clip(X, Y, W, H);
 		// Draw cell bg
@@ -97,7 +100,8 @@ public:
 		fl_color(color()); fl_rect(X, Y, W, H);
 		fl_pop_clip();
 	}
-	int init = 0;
+	//litely taken from FLTK Table example
+	//cell drawing controller.
 	void draw_cell(TableContext context, int ROW = 0, int COL = 0, int X = 0, int Y = 0, int W = 0, int H = 0) FL_OVERRIDE {
 			vector<const char*> temp = { "Title","Album","Artists","Duration","Year" };
 			static char s[40];
@@ -106,8 +110,6 @@ public:
 				fl_font(FL_HELVETICA, 16);              // set the font for our drawing operations
 				return;
 			case CONTEXT_COL_HEADER:                  // Draw column headers
-				//sprintf(s, "%c", 'A' + COL);
-				//DrawHeader(s, X, Y, W, H);
 				DrawHeader(temp[COL], X, Y, W, H);
 				return;
 			case CONTEXT_ROW_HEADER:                  // Draw row headers
@@ -127,6 +129,8 @@ public:
 				return;
 			}
 	}
+	//litely taken from FLTK Table example
+	//Draws the header of the table
 	void DrawHeader(const char* s, int X, int Y, int W, int H) {
 		fl_push_clip(X, Y, W, H);
 		char r = 15;
@@ -140,10 +144,13 @@ public:
 	}
 };
 
+//adds item to the output table
 void output_table::add_item(vector<const char*> column) {
 	this->datastore.push_back(column);
 
 }
+
+//allows the stopwatch to exist and be updated given limitations of the library.
 class my_input : public Fl_Input {
 public:
 	Fl_Multiline_Output* stopwatch;
@@ -162,7 +169,6 @@ public:
 		else {
 			send_to_stopwatch = "Time for creating Tree: " + load + "s\n" + "Time for searching " + search + "s";
 		}
-		//cout << send_to_stopwatch << endl;
 		stopwatch->value(send_to_stopwatch.c_str());
 	}
 };
@@ -249,7 +255,6 @@ void button_pressed(Fl_Choice* tree_type, Fl_Choice* operation_choice, Fl_Choice
 					cout << "Height of tree: " << avl->root->height << "\n";
 					//delete the output array from the tree
 					vector<int>().swap(avl->output_for_search);
-					//avl->output_for_search.clear();
 					//delete each root from the tree.
 					avl->deleteAll(avl->root);
 					delete avl;
@@ -331,8 +336,7 @@ void button_pressed(Fl_Choice* tree_type, Fl_Choice* operation_choice, Fl_Choice
 				}
 			}
 			else if (tree_type->value() == 2) {
-				//put the b+ Tree testing code here
-				   //put the b+ Tree testing code here
+			//BPlus Code
 		    BPlusTree* BPlus = new BPlusTree;
 		    vector<string>* song = new vector<string>;
 		    auto start2 = std::chrono::high_resolution_clock::now();
@@ -350,8 +354,9 @@ void button_pressed(Fl_Choice* tree_type, Fl_Choice* operation_choice, Fl_Choice
 		    auto microseconds2 = std::chrono::duration_cast<std::chrono::microseconds>(finish2 - start2);
 		    cout << "B+ load time: " << (float) microseconds2.count() / 1000000 << endl;
 		    auto start3 = std::chrono::high_resolution_clock::now();
-            //attribute is 0 for title 1 fdr album 2 for artist 3 for length 4 for year
+            //attribute is 0 for title 1 for album 2 for artist 3 for length 4 for year
 		    vector<vector<string>> searchResult;
+			//logic for choosing operation
 			if(op_choice == 1){
 				searchResult = BPlus->search(search_option->value(), arg - 1);
 			}else{
@@ -364,6 +369,7 @@ void button_pressed(Fl_Choice* tree_type, Fl_Choice* operation_choice, Fl_Choice
 			search_time = (float)microseconds3.count() / 1000000;
             vector<const char*> * songout = new vector<const char*>;
             string* song_item = new string;
+			//inserting into the table
             result_table->resetArray();
             for (auto songs : searchResult) {
                 *song_item = songs[0];
@@ -386,8 +392,6 @@ void button_pressed(Fl_Choice* tree_type, Fl_Choice* operation_choice, Fl_Choice
                 //vector<const char>().swap(songout);
             }
             vector<vector<string>>().swap(searchResult);
-			//BPlus->removeAll();
-		    //searchResult.clear();
 		    result_table->show();
 		    result_table->update_list();
 
@@ -397,11 +401,8 @@ void button_pressed(Fl_Choice* tree_type, Fl_Choice* operation_choice, Fl_Choice
 }
 
 void updated_operation(Fl_Choice* Tree_choice, Fl_Choice* operation_choice, Fl_Choice* sort_choice, Fl_Input* search_option, Fl_Choice* sort_dir) {
+	//if searching
 	if (operation_choice->value() == 1) {
-		//search option
-		//sort_choice->remove(0);
-		//sort_choice->add("Search type");
-		//sort_choice->value(6);
 		sort_choice->show();
 		search_option->show();
 		if (Tree_choice->value() == 1) {
@@ -413,6 +414,7 @@ void updated_operation(Fl_Choice* Tree_choice, Fl_Choice* operation_choice, Fl_C
 
 
 	}
+	//if sorting
 	else if(operation_choice->value() == 2 ){
 		//sort option
 		sort_choice->show();
@@ -424,6 +426,7 @@ void updated_operation(Fl_Choice* Tree_choice, Fl_Choice* operation_choice, Fl_C
 			sort_dir->hide();
 		}
 	}
+	//if something else
 	else {
 		sort_choice->hide();
 		sort_dir->hide();
@@ -446,12 +449,7 @@ public:
 	}
 };
 
-int scrollpos;
 void scrolled(output_table* result_table){
-
-	if(abs(result_table->scroll->value() -  scrollpos) > 75){
-		
-	}
 	result_table->update_list();
 }
 
@@ -537,14 +535,16 @@ int main(int argc, char** argv) {
 	string buf;
 	stringstream buff;
 	string* temp = new string;
-	//ignore the first line;
+	//ignore the first line in csv
 	vector<const char*> row;
 	getline(inputFile, buf, '\n');
-	for(int i = 0; i < 10000; i++){
-		getline(inputFile, buf, '\n');
-	//while (getline(inputFile, buf, '\n')) {
+	//the for loop is to only include small amount of the dataset for testing
+	//for(int i = 0; i < 10000; i++){
+		//getline(inputFile, buf, '\n');
+	while (getline(inputFile, buf, '\n')) {
 		buff.str(buf);
 		while (getline(buff, *temp, ',')) {
+			//artist names are bounded by [' '] so they need to be removed
 			if ((*temp)[0] == '[') {
 				(*temp).erase(0, 2);
 				(*temp).pop_back();
@@ -552,17 +552,13 @@ int main(int argc, char** argv) {
 				row.push_back((*temp).c_str());
 			}
 			else {
-			
-				if(temp->size() == 5 && ((*temp)[0] == '1' || ((*temp)[0]) == '2')){
-					(*temp).pop_back();
-				}
+			//removing strange issue with the values
 				while ((*temp)[0] == '\"') {
 					(*temp).pop_back();
 					(*temp).erase(0, 1);
 				}
 				row.push_back((*temp).c_str());
 			}
-			//cout << temp.c_str() << "\n";
 			temp = new string;
 		}
 
@@ -580,7 +576,7 @@ int main(int argc, char** argv) {
 	}
 	inputFile.close();
 	//for smaller datasets for ease of testing.
-	if(0){
+	if(1){
 	inputFile.open("800k1artist2.csv");
 	int line = 0;
 	getline(inputFile, buf, '\n');
