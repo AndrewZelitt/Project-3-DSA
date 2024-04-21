@@ -48,16 +48,17 @@ public:
             root = new BPlusTreeNode();
             root->songs.push_back(song);
             root->isLeaf = true;
+            root->parent = nullptr;
         }
 
         else {
-            insertHelper(root, song, sortBy);
+            insertHelper(root, song, sortBy, nullptr);
         }
         //printTree();
     }
 
     // Helper function for insertion
-    void insertHelper(BPlusTreeNode* node, const vector<string>& song, int sortBy) {
+    void insertHelper(BPlusTreeNode* node, const vector<string>& song, int sortBy, BPlusTreeNode* parent) {
         //cout << "insert helper" << endl;
         if (node->children.empty()) {
             // Insert into leaf node
@@ -70,11 +71,12 @@ public:
                 }
                 i++;
             }
+            node->parent = parent;
             node->songs.insert(iter, song);
 
             // Split the leaf node if necessary
             if (node->songs.size() >= MAX_SONGS_PER_NODE) {
-                splitLeafNode(node, sortBy);
+                splitLeafNode(node, sortBy, parent);
             }
         }
         else {
@@ -83,6 +85,7 @@ public:
             int indexJ;
             bool end = false;
             for (int i = 0; i < node->children.size(); i++) {
+                node->children[i]->parent = node;
                 for (int j = 0; j < node->children[i]->songs.size(); j++){
                     //if (node->children[i]->songs[j].title > song.title) {
                     if (strcasecmp(node->children[i]->songs[j][sortBy].c_str(), song[sortBy].c_str()) >= 0) {
@@ -104,12 +107,12 @@ public:
                 }
                 indexI--;
             }
-            insertHelper(node->children[indexI], song, sortBy);
+            insertHelper(node->children[indexI], song, sortBy, node);
         }
     }
 
     // Function to split a leaf node
-    void splitLeafNode(BPlusTreeNode* node, int sortBy) {
+    void splitLeafNode(BPlusTreeNode* node, int sortBy, BPlusTreeNode* parent) {
         // Create a new node for splitting
         BPlusTreeNode* newNode = new BPlusTreeNode();
         int mid = node->songs.size() / 2;
@@ -124,7 +127,7 @@ public:
 
         // Insert the middle key to the parent node
         vector<string>& middleSong = newNode->songs.front(); // Assuming keys are sorted
-        insertIntoParent(node, middleSong, newNode, sortBy);
+        insertIntoParent(node, middleSong, newNode, sortBy, parent);
     }
 
     // Function to find the parent of a given node
@@ -173,7 +176,8 @@ public:
         node->children.erase(node->children.begin() + mid + 1, node->children.end());
 
         // Find the parent node
-        BPlusTreeNode* parent = findParent(root, node);
+        //BPlusTreeNode* parent = findParent(root, node);
+        BPlusTreeNode* parent = node->parent;
         if (parent == nullptr) {
             // If the current node is the root, create a new root
             parent = new BPlusTreeNode();
@@ -192,17 +196,18 @@ public:
     }
 
     // Function to insert a key into the parent node
-    void insertIntoParent(BPlusTreeNode* leftChild, const vector<string>& song, BPlusTreeNode* rightChild, int sortBy) {
+    void insertIntoParent(BPlusTreeNode* leftChild, const vector<string>& song, BPlusTreeNode* rightChild, int sortBy, BPlusTreeNode* parent) {
         if (root == leftChild) {
             // Create a new root
             root = new BPlusTreeNode();
             root->songs.push_back(song);
             root->children.push_back(leftChild);
             root->children.push_back(rightChild);
+            root->parent = nullptr;
             root->isLeaf = false;
         } else {
             // Find the parent node
-            BPlusTreeNode* parent = findParent(root, leftChild);
+            //BPlusTreeNode* parent = findParent(root, leftChild);
             parent->songs.push_back(song);
             //using bubble sort for now should probably make more efficient later
             bool swapped;
